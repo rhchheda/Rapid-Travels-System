@@ -4,23 +4,23 @@
 <link rel="icon" type="image/x-icon" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard | Hitendra Tours</title>
+    <title>Admin Dashboard | Rapid Travels</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; }
         .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .login-container { max-width: 400px; margin: 100px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .login-container h2 { margin-bottom: 20px; color: #1e3c5c; }
+        .login-container h2 { margin-bottom: 20px; color: #0d2145; }
         .login-container input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 6px; }
-        .login-container button { width: 100%; padding: 12px; background: #1e3c5c; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .login-container button { width: 100%; padding: 12px; background: #0d2145; color: white; border: none; border-radius: 6px; cursor: pointer; }
         .error { color: red; margin-top: 10px; white-space: pre-line; }
         .dashboard { display: none; }
-        .header { background: #1e3c5c; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .header { background: #0d2145; color: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .logout-btn, .change-pwd-btn { background: #e67e22; border: none; padding: 8px 16px; border-radius: 4px; color: white; cursor: pointer; }
-        .change-pwd-btn { background: #2c5282; }
+        .change-pwd-btn { background: #1a3a6e; }
         .stats { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
         .stat-card { background: white; padding: 15px; border-radius: 8px; flex: 1; min-width: 100px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .stat-card h3 { font-size: 2rem; color: #1e3c5c; }
+        .stat-card h3 { font-size: 2rem; color: #0d2145; }
         .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .filters input, .filters select { padding: 8px; border-radius: 4px; border: 1px solid #ccc; }
         .bookings-table { background: white; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -34,7 +34,7 @@
         .loading { text-align: center; padding: 40px; }
         .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
         .modal { background:white; border-radius:12px; max-width:400px; width:90%; }
-        .modal-header { background:#1e3c5c; color:white; padding:15px; display:flex; justify-content:space-between; }
+        .modal-header { background:#0d2145; color:white; padding:15px; display:flex; justify-content:space-between; }
         .modal-body { padding:20px; }
         .toast-notify { position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 12px 20px; border-radius: 8px; z-index: 2000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
         .toast-notify.show { opacity: 1; }
@@ -57,7 +57,7 @@
 <body>
 <div class="container">
     <div id="loginScreen" class="login-container">
-        <h2>Admin Login | Hitendra Tours</h2>
+        <h2>Admin Login | Rapid Travels</h2>
         <input type="password" id="adminPassword" placeholder="Enter admin password" autofocus>
         <button onclick="login()">Login</button>
         <div id="loginError" class="error"></div>
@@ -116,7 +116,7 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwFls5uasexKXAPPkRrjJ6xwLML-yS0u5GnsHwr3YxOxItT6fg16JPR6XT7IL3Ui5t6/exec"; // REPLACE!
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyfa4naqeIa6nI_YRmvleBAJHUGijZQY6cfINUshKBU7h6zWhHbmNseNlJ6N_b57NPV/exec"; // REPLACE!
     let authToken = null;
     let allBookings = [];
 
@@ -390,7 +390,7 @@
         if (!phone) { showToast('Customer phone missing.', 'error'); return; }
         const waPhone = formatPhoneForWA(phone);
         const fareText = fare ? `₹${fare}` : 'to be advised';
-        const message = `Dear ${name},\n\nTrip ${bookingId} total fare is ${fareText}.\n\nPayment Options:\n• UPI: hitendratours@okhdfcbank\n• Bank: HDFC A/C 123456789012, IFSC HDFC0001234\n• Cash: Pay driver.\n\nThank you.\nHitendra Tours`;
+        const message = `Dear ${name},\n\nTrip ${bookingId} total fare is ${fareText}.\n\nPayment Options:\n• UPI: 9480324895 (Google Pay / PhonePe / Paytm)\n• Cash: Pay driver directly.\n\nThank you.\nRapid Travels | Manish Nagda | 94803 24895`;
         window.open(`https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`, '_blank');
     }
 
