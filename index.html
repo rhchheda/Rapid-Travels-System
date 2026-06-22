@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Rapid Travels | Tata Indica Car Service – Hubballi</title>
+
+    <!-- Open Graph / Social Share -->
+    <meta property="og:title" content="Rapid Travels | Tata Indica Car Service – Hubballi">
+    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi (Hubli), Karnataka.">
+    <meta property="og:image" content="Rapid-Travels.jpg">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Rapid Travels | Tata Indica Car Service – Hubballi">
+    <meta name="twitter:description" content="Your Journey, Our Priority! Reliable Tata Indica car service in Hubballi.">
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ── Rapid Travels brand overrides ── */
+        :root {
+            --gold: #c9a227;
+            --gold-light: #e8c84a;
+            --navy: #0d2145;
+            --navy-mid: #1a3a6e;
+            --white: #ffffff;
+        }
+
+        /* Blessing banner */
+        .blessing-banner {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            color: var(--gold-light);
+            text-align: center;
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            border-bottom: 3px solid var(--gold);
+        }
+        .nav-brand h1 { color: var(--gold-light); font-size: 1.6rem; font-weight: 800; }
+        .nav-brand .tagline { color: rgba(255,255,255,0.8); font-size: 0.75rem; }
+        .nav-phone { color: var(--gold-light) !important; }
+
+        /* Hero */
+        .hero { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 60%, #102860 100%); }
+        .hero h1 { color: var(--gold-light); }
+        .hero-badge { background: var(--gold); color: var(--navy); font-weight: 700; }
+
+        /* Section titles */
+        .section-title::after { background: var(--gold); }
+
+        /* Services two-column info box */
+        .services-info-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+        @media (max-width: 640px) { .services-info-box { grid-template-columns: 1fr; } }
+
+        .info-panel {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 20px 24px;
+            color: var(--white);
+        }
+        .info-panel h3 {
+            color: var(--gold-light);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-panel ul { list-style: none; padding: 0; margin: 0; }
+        .info-panel ul li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 0;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(201,162,39,0.2);
+        }
+        .info-panel ul li:last-child { border-bottom: none; }
+        .info-panel ul li i { color: var(--gold); width: 18px; flex-shrink: 0; }
+
+        /* Trust badges */
+        .trust-badges {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+        .trust-badge {
+            background: rgba(201,162,39,0.15);
+            border: 1px solid var(--gold);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--gold-light);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        /* Call-to-action strip */
+        .cta-strip {
+            background: var(--gold);
+            color: var(--navy);
+            text-align: center;
+            padding: 14px 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+        .cta-strip a { color: var(--navy); text-decoration: none; font-size: 1.1rem; }
+
+        /* Footer brand */
+        .footer { background: var(--navy); border-top: 3px solid var(--gold); }
+        .footer-brand h3, .footer-contact h4, .footer-hours h4, .footer-address h4 { color: var(--gold-light); }
+    </style>
+</head>
+<body>
+
+<div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div><p>Loading...</p></div>
+
+<!-- Blessing Banner -->
+<div class="blessing-banner">
+    🙏 Shri Ganeshaya Namaha 🙏 &nbsp;|&nbsp; 🙏 Shri Ajitnathaya Namaha 🙏 &nbsp;|&nbsp; 🌺 Shree Ambe Mata Ki Jai 🌺
+</div>
+
+<nav class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <h1><i class="fas fa-car" style="color:var(--gold);margin-right:8px;"></i>Rapid Travels</h1>
+            <span class="tagline">Tata Indica Car Service | Hubballi (Hubli), Karnataka</span>
+        </div>
+        <div class="nav-contact">
+            <a href="tel:+919480324895" class="nav-phone"><i class="fas fa-phone"></i> 94803 24895</a>
+        </div>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="container hero-content">
+        <div class="hero-badge animate-fade-down"><i class="fas fa-car"></i> Tata Indica Car Service</div>
+        <h1 class="animate-fade-up">Your Journey,<br>Our Priority!</h1>
+        <p class="animate-fade-up delay-1">Safe &bull; Reliable &bull; Affordable &bull; On-Time</p>
+        <div class="status-card animate-fade-up delay-2" id="statusCard">
+            <div class="status-indicator"><span class="status-dot" id="statusDot"></span><span id="statusText">Checking availability...</span></div>
+            <div id="hoursText" class="hours-text"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Services & Online Ticket Booking -->
+<section class="services">
+    <div class="container">
+        <h2 class="section-title">What We Offer</h2>
+        <div class="services-info-box">
+
+            <!-- Left: We Provide -->
+            <div class="info-panel">
+                <h3><i class="fas fa-check-double"></i> We Provide</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Pick-Up &amp; Drop (Tata Indica)</li>
+                    <li><i class="fas fa-train"></i> Railway / Airport Pick-Up &amp; Drop</li>
+                    <li><i class="fas fa-plane"></i> Railway / Airport &amp; Drop</li>
+                    <li><i class="fas fa-graduation-cap"></i> College &amp; School Travel</li>
+                    <li><i class="fas fa-briefcase"></i> Office Travel</li>
+                    <li><i class="fas fa-place-of-worship"></i> Temple Visits</li>
+                    <li><i class="fas fa-shopping-bag"></i> Market Trips</li>
+                    <li><i class="fas fa-calendar-day"></i> Daily Travel</li>
+                    <li><i class="fas fa-road"></i> Outstation Trips</li>
+                </ul>
+            </div>
+
+            <!-- Right: Online Ticket Booking + Trust Badges -->
+            <div class="info-panel">
+                <h3><i class="fas fa-ticket-alt"></i> Online Ticket Booking Available</h3>
+                <ul>
+                    <li><i class="fas fa-train"></i> Train Tickets</li>
+                    <li><i class="fas fa-bus"></i> Bus Tickets</li>
+                    <li><i class="fas fa-plane"></i> Flight Tickets</li>
+                </ul>
+                <div class="trust-badges" style="margin-top:18px;">
+                    <div class="trust-badge"><i class="fas fa-shield-alt"></i> Safe &amp; Reliable</div>
+                    <div class="trust-badge"><i class="fas fa-rupee-sign"></i> Affordable Rates</div>
+                    <div class="trust-badge"><i class="fas fa-clock"></i> On-Time</div>
+                    <div class="trust-badge"><i class="fas fa-hands-helping"></i> Friendly Assistance</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- The Rapid Travels Advantage -->
+<section class="advantage">
+    <div class="container">
+        <h2 class="section-title">The Rapid Travels Advantage</h2>
+        <div class="advantage-grid">
+            <div class="advantage-card">
+                <div class="rupee-symbol">₹</div>
+                <h3>Upfront Honest Pricing</h3>
+                <p>No hidden charges. Final bill as quoted.</p>
+            </div>
+            <div class="advantage-card">
+                <i class="fas fa-car-side"></i>
+                <h3>Tata Indica Car</h3>
+                <p>Well-maintained, clean, and comfortable Tata Indica.</p>
+            </div>
+            <div class="advantage-card">
+                <i class="fas fa-user-tie"></i>
+                <h3>Professional Driver</h3>
+                <p>Courteous, experienced driver with local route expertise.</p>
+            </div>
+            <div class="advantage-card">
+                <i class="fas fa-globe"></i>
+                <h3>Local &amp; Outstation</h3>
+                <p>Your trusted partner for city and outstation travel.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Fleet Section -->
+<section class="fleet">
+    <div class="container">
+        <h2 class="section-title">Our Fleet</h2>
+        <div class="fleet-card">
+            <div class="fleet-gallery">
+                <div class="gallery-item"><img src="assets/images/exterior.jpeg" alt="Tata Indica Exterior Front" loading="lazy"><p class="image-caption">Exterior Front</p></div>
+                <div class="gallery-item"><img src="assets/images/exterior-1.jpeg" alt="Tata Indica Exterior Side" loading="lazy"><p class="image-caption">Exterior Side</p></div>
+                <div class="gallery-item"><img src="assets/images/interior.jpeg" alt="Spacious Interior" loading="lazy"><p class="image-caption">Spacious Interior</p></div>
+                <div class="gallery-item"><img src="assets/images/interior-1.jpeg" alt="Comfortable Seating" loading="lazy"><p class="image-caption">Comfortable Seating</p></div>
+            </div>
+            <div class="fleet-details">
+                <h3>Tata Indica</h3>
+                <p><strong>Capacity:</strong> Comfortable seating for 4 passengers + luggage</p>
+                <p><strong>Features:</strong> A/C, clean &amp; sanitized, punctual service</p>
+                <div class="pricing-box">
+                    <h4>💰 Pricing Details</h4>
+                    <p><strong>Local Trips:</strong> Best price quoted based on distance &amp; duration. Call or WhatsApp for instant quote.</p>
+                    <p><strong>Outstation Trips:</strong> Competitive per-km rates + driver allowance. Call for details.</p>
+                </div>
+                <div class="fleet-badge">Perfect for individuals &amp; small families</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Booking Section -->
+<section class="booking" id="booking">
+    <div class="container">
+        <div class="booking-wrapper">
+            <!-- LEFT COLUMN: Info Card -->
+            <div class="booking-info">
+                <div class="info-card">
+                    <h3><i class="fas fa-headset"></i> Why Book With Us?</h3>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> 24/7 Customer Support</li>
+                        <li><i class="fas fa-check-circle"></i> Professional Driver</li>
+                        <li><i class="fas fa-check-circle"></i> Well-Maintained Tata Indica</li>
+                        <li><i class="fas fa-check-circle"></i> On-Time Guarantee</li>
+                        <li><i class="fas fa-check-circle"></i> Best Local Rates</li>
+                        <li><i class="fas fa-check-circle"></i> Online Ticket Booking</li>
+                    </ul>
+                    <div class="ceo-info">
+                        <img src="https://ui-avatars.com/api/?background=0d2145&color=c9a227&name=Manish+Nagda" alt="Manish Nagda" class="ceo-avatar">
+                        <div>
+                            <strong>Manish Nagda</strong>
+                            <small>Rapid Travels, Hubballi</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: Booking Form -->
+            <div class="booking-form-container">
+                <div class="form-header">
+                    <h2>Book Your Ride</h2>
+                    <p>Fill the details below. We'll get back to you within 20 minutes.</p>
+                </div>
+                <form id="bookingForm" class="booking-form">
+                    <div style="display:none;"><label for="website">Website</label><input type="text" id="website" name="website" value=""></div>
+
+                    <div class="form-group"><label><i class="fas fa-user"></i> Full Name *</label><input type="text" id="fullName" required placeholder="Enter your full name"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number *</label><input type="tel" id="phone" required placeholder="10-digit mobile number" pattern="[0-9]{10}"></div>
+                        <div class="form-group"><label><i class="fas fa-envelope"></i> Email</label><input type="email" id="email" placeholder="your@email.com"></div>
+                    </div>
+                    <div class="form-group"><label><i class="fas fa-concierge-bell"></i> Service Type *</label>
+                        <select id="serviceType" required>
+                            <option value="">Select service</option>
+                            <option value="Pick-Up & Drop">Pick-Up &amp; Drop</option>
+                            <option value="Railway/Airport Pick-Up & Drop">Railway / Airport Pick-Up &amp; Drop</option>
+                            <option value="College & School Travel">College &amp; School Travel</option>
+                            <option value="Office Travel">Office Travel</option>
+                            <option value="Temple Visit">Temple Visit</option>
+                            <option value="Market Trip">Market Trip</option>
+                            <option value="Daily Travel">Daily Travel</option>
+                            <option value="Outstation Trip">Outstation Trip</option>
+                            <option value="Train Ticket Booking">Train Ticket Booking</option>
+                            <option value="Bus Ticket Booking">Bus Ticket Booking</option>
+                            <option value="Flight Ticket Booking">Flight Ticket Booking</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label><i class="fas fa-route"></i> Trip Type *</label>
+                        <select id="tripType" required>
+                            <option value="oneway">One Way</option>
+                            <option value="roundtrip">Round Trip (Return)</option>
+                            <option value="multistop">Multi-Stop / Break Journey</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Pickup Location *</label><input type="text" id="pickup" required placeholder="e.g., Hubballi Station, Near Kamat Hotel"></div>
+                    <div class="form-group"><label><i class="fas fa-flag-checkered"></i> <span id="dropLabel">Drop Location *</span></label><input type="text" id="drop" required placeholder="e.g., Hubballi Airport T1"></div>
+                    <div id="roundTripFields" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group"><label><i class="fas fa-calendar-alt"></i> Return Date *</label><input type="date" id="returnDate"></div>
+                            <div class="form-group"><label><i class="fas fa-clock"></i> Return Pickup Time *</label><input type="time" id="returnTime"></div>
+                        </div>
+                        <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Return Drop Location (if different)</label><input type="text" id="returnDrop" placeholder="Leave blank if same as original pickup"></div>
+                    </div>
+                    <div id="multiStopFields" style="display:none;">
+                        <div id="stopsContainer">
+                            <div class="stop-entry">
+                                <div class="form-row">
+                                    <div class="form-group"><label>Stop 1 Location</label><input type="text" class="stop-location" placeholder="e.g., Dharwad"></div>
+                                    <div class="form-group"><label>Halt (minutes)</label><input type="number" class="stop-halt" placeholder="30" min="0" step="10"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="addStopBtn" class="add-stop-btn"><i class="fas fa-plus"></i> Add another stop (max 3)</button>
+                        <small class="form-note">You can add up to 3 intermediate stops.</small>
+                    </div>
+                    <div class="form-group"><label><i class="fas fa-info-circle"></i> Landmark / Special Instructions</label><textarea id="landmark" rows="2" placeholder="Gate/Terminal number, building name, any specific instructions..."></textarea></div>
+                    <div class="form-row">
+                        <div class="form-group"><label><i class="fas fa-calendar"></i> Journey Date *</label><input type="date" id="journeyDate" required></div>
+                        <div class="form-group"><label><i class="fas fa-clock"></i> Pickup Time *</label><input type="time" id="pickupTime" required></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-users"></i> Passengers *</label>
+                            <select id="passengers" required>
+                                <option value="1">1 Passenger</option>
+                                <option value="2">2 Passengers</option>
+                                <option value="3">3 Passengers</option>
+                                <option value="4">4 Passengers</option>
+                            </select>
+                            <small style="color:#e67e22;">Max 4 passengers. For more please call 94803 24895.</small>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-suitcase"></i> Luggage</label>
+                            <select id="luggage">
+                                <option value="None">No luggage</option>
+                                <option value="1-2 small bags">1-2 small bags</option>
+                                <option value="3-4 bags">3-4 bags</option>
+                                <option value="Heavy luggage">Heavy luggage (inform)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" id="emailCopy"> <span><i class="fas fa-envelope"></i> Email me a copy of this booking</span></label>
+                        <small>We'll send trip details to your email address.</small>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn"><span class="btn-text">Submit Booking</span><i class="fas fa-save"></i></button>
+                    <p class="form-note"><i class="fas fa-shield-alt"></i> Your details are secure. We'll respond within 20 minutes on WhatsApp.</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="testimonials">
+    <div class="container">
+        <h2 class="section-title">Loved by Travelers</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card"><i class="fas fa-quote-left"></i><p>"The car was clean and the driver arrived on time. Airport transfer was smooth and hassle-free!"</p><h4>- Suresh Patil</h4><div class="rating">★★★★★</div></div>
+            <div class="testimonial-card"><i class="fas fa-quote-left"></i><p>"Booked for daily office travel. Very reliable and affordable. Highly recommend Rapid Travels!"</p><h4>- Kavitha Naik</h4><div class="rating">★★★★★</div></div>
+            <div class="testimonial-card"><i class="fas fa-quote-left"></i><p>"Best car service in Hubballi. Punctual, polite driver, and fair pricing. Will book again."</p><h4>- Ramesh Kulkarni</h4><div class="rating">★★★★☆</div></div>
+        </div>
+    </div>
+</section>
+
+<section class="faq">
+    <div class="container">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-grid">
+            <div class="faq-item"><h3><i class="fas fa-question-circle"></i> What is included in the fare?</h3><p>Our quoted fare includes driver allowance and fuel. Toll taxes and parking fees are extra, payable as per actual receipts.</p></div>
+            <div class="faq-item"><h3><i class="fas fa-credit-card"></i> What payment modes do you accept?</h3><p>We accept Cash, UPI (Google Pay, PhonePe, Paytm), and Net Banking.</p></div>
+            <div class="faq-item"><h3><i class="fas fa-plane"></i> Do you help with online ticket booking?</h3><p>Yes! We book Train, Bus, and Flight tickets online for you. Contact us on WhatsApp for assistance.</p></div>
+            <div class="faq-item"><h3><i class="fas fa-times-circle"></i> What is your cancellation policy?</h3><p>Cancel your ride for free up to 2 hours before the scheduled pickup time.</p></div>
+            <div class="faq-item"><h3><i class="fab fa-whatsapp"></i> Will I get live updates?</h3><p>Yes. Receive real-time booking status and driver details directly on WhatsApp.</p></div>
+        </div>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature"><i class="fas fa-clock"></i><h3>Punctuality</h3><p>Never late. Always on time for your journey.</p></div>
+            <div class="feature"><i class="fas fa-shield-alt"></i><h3>Safe Travel</h3><p>Professional driver, well-maintained Tata Indica.</p></div>
+            <div class="feature"><i class="fab fa-whatsapp"></i><h3>Instant Booking</h3><p>Confirm your ride in seconds on WhatsApp.</p></div>
+            <div class="feature"><div class="rupee-symbol-small">₹</div><h3>Best Price</h3><p>Competitive rates with no hidden charges.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Strip -->
+<div class="cta-strip">
+    Book your ride or tickets with Rapid Travels today! &nbsp;
+    <a href="https://wa.me/919480324895?text=Hello%20Rapid%20Travels!%20I%20want%20to%20book%20a%20ride." target="_blank">
+        <i class="fab fa-whatsapp"></i> WhatsApp: 94803 24895
+    </a>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3><i class="fas fa-car" style="color:var(--gold);margin-right:6px;"></i>Rapid Travels</h3>
+                <p>Tata Indica Car Service | Hubballi (Hubli), Karnataka</p>
+                <p class="commitment">Your Journey, Our Priority!</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Contact</h4>
+                <p><i class="fas fa-phone"></i> <a href="tel:+919480324895">94803 24895</a></p>
+                <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/919480324895" target="_blank">WhatsApp: 94803 24895</a></p>
+                <p><strong>Manish Nagda</strong></p>
+            </div>
+            <div class="footer-hours"><h4>Service Hours</h4><p id="footerHours">Loading...</p></div>
+            <div class="footer-address">
+                <h4>Location</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Hubballi (Hubli),<br>Karnataka, India</p>
+            </div>
+        </div>
+        <div class="footer-bottom"><p>&copy; 2026 Rapid Travels. All rights reserved.</p></div>
+    </div>
+</footer>
+
+<div id="toast" class="toast"></div>
+
+<script src="script.js"></script>
+<script>
+    document.querySelectorAll('.gallery-item img').forEach(img => {
+        img.style.cursor = 'pointer';
+        img.addEventListener('click', () => window.open(img.src, '_blank'));
+    });
+</script>
+
+<script>
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        showToast("Right-click is disabled. Please use the WhatsApp button to contact us.", "error");
+        return false;
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'F12') { e.preventDefault(); showToast("Developer tools are disabled.", "error"); return false; }
+        if ((e.ctrlKey && e.shiftKey && e.key === 'I') || (e.metaKey && e.altKey && e.key === 'I')) { e.preventDefault(); showToast("Developer tools are disabled.", "error"); return false; }
+        if ((e.ctrlKey && e.key === 'u') || (e.metaKey && e.key === 'u')) { e.preventDefault(); showToast("View source is disabled.", "error"); return false; }
+        if ((e.ctrlKey && e.key === 's') || (e.metaKey && e.key === 's')) { e.preventDefault(); showToast("Saving the page is not allowed.", "error"); return false; }
+    });
+</script>
+</body>
+</html>
