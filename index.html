@@ -4,17 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi</title>
+    <meta name="description" content="Rapid Travels – Hubballi (Hubli) Tata Indica cab service for airport pickup, railway station transfer, outstation trips, daily travel & online train/bus/flight ticket booking. Call 94803 24895.">
 
     <!-- Open Graph / Social Share -->
     <meta property="og:title" content="Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi">
-    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi, Karnataka.">
+    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi (Hubli), Karnataka.">
     <meta property="og:image" content="Rapid-Travels.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi">
+    <meta name="twitter:title" content="Rapid Travels | Tata Indica Car Service – Hubballi">
     <meta name="twitter:description" content="Your Journey, Our Priority! Reliable Tata Indica car service in Hubballi.">
 
     <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Schema.org LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Rapid Travels",
+      "description": "Tata Indica car service and online ticket booking in Hubballi – airport, railway, outstation, daily travel.",
+      "telephone": "+919480324895",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Plot#138, Manoj Paradise, KDO Residency, A12 2nd Floor, Keshwapur",
+        "addressLocality": "Hubballi",
+        "addressRegion": "Karnataka",
+        "postalCode": "580023",
+        "addressCountry": "IN"
+      },
+      "geo": { "@type": "GeoCoordinates", "latitude": 15.3647, "longitude": 75.1240 },
+      "openingHours": "Mo-Su 00:00-23:59",
+      "priceRange": "₹",
+      "sameAs": ["https://wa.me/919480324895"]
+    }
+    </script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -138,6 +162,12 @@
 
 <div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div><p>Loading...</p></div>
 
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/919480324895?text=Hello%20Rapid%20Travels!%20I%20need%20help." target="_blank" class="wa-float" title="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <span class="wa-float-tooltip">Chat on WhatsApp</span>
+</a>
+
 <!-- Blessing Banner -->
 <div class="blessing-banner">
     🙏 Shri Ganeshaya Namaha 🙏 &nbsp;|&nbsp; 🙏 Shri Ajitnathaya Namaha 🙏 &nbsp;|&nbsp; 🌺 Shree Ambe Mata Ki Jai 🌺
@@ -147,7 +177,7 @@
     <div class="container">
         <div class="nav-brand">
             <h1><i class="fas fa-car" style="color:var(--gold);margin-right:8px;"></i>Rapid Travels</h1>
-            <span class="tagline">Tata Indica Car Service | Hubballi , Karnataka</span>
+            <span class="tagline">Tata Indica Car Service | Hubballi (Hubli), Karnataka</span>
         </div>
         <div class="nav-contact">
             <a href="tel:+919480324895" class="nav-phone"><i class="fas fa-phone"></i> 94803 24895</a>
@@ -422,6 +452,66 @@
     </div>
 </section>
 
+<!-- Ticket Booking Enquiry Section -->
+<section class="ticket-booking">
+    <div class="container">
+        <h2 class="section-title">Book a Ticket Online</h2>
+        <div class="ticket-form-wrap">
+            <div class="form-row" style="margin-bottom:0;">
+                <div class="form-group">
+                    <label><i class="fas fa-ticket-alt"></i> Ticket Type *</label>
+                    <select id="tkt-type">
+                        <option value="Train Ticket">🚂 Train Ticket</option>
+                        <option value="Bus Ticket">🚌 Bus Ticket</option>
+                        <option value="Flight Ticket">✈️ Flight Ticket</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Your Name *</label>
+                    <input type="text" id="tkt-name" placeholder="Full name">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> Phone *</label>
+                    <input type="tel" id="tkt-phone" placeholder="10-digit mobile">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-users"></i> Passengers</label>
+                    <input type="number" id="tkt-pax" placeholder="Number of seats" min="1" max="9" value="1">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-map-marker-alt"></i> From *</label>
+                    <input type="text" id="tkt-from" placeholder="Origin city / station">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-flag-checkered"></i> To *</label>
+                    <input type="text" id="tkt-to" placeholder="Destination city / station">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label><i class="fas fa-calendar"></i> Travel Date *</label>
+                    <input type="date" id="tkt-date">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-chair"></i> Class / Preference</label>
+                    <input type="text" id="tkt-class" placeholder="e.g. Sleeper, 3AC, Economy">
+                </div>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-info-circle"></i> Additional Notes</label>
+                <textarea id="tkt-notes" rows="2" placeholder="Any special requirements, train number, etc."></textarea>
+            </div>
+            <button class="ticket-submit-btn" onclick="sendTicketEnquiry()">
+                <i class="fab fa-whatsapp"></i> Send Ticket Enquiry via WhatsApp
+            </button>
+        </div>
+    </div>
+</section>
+
 <!-- CTA Strip -->
 <div class="cta-strip">
     Book your ride or tickets with Rapid Travels today! &nbsp;
@@ -435,7 +525,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h3><i class="fas fa-car" style="color:var(--gold);margin-right:6px;"></i>Rapid Travels</h3>
-                <p>Tata Indica Car Service & Ticket Booking | Hubballi, Karnataka</p>
+                <p>Tata Indica Car Service | Hubballi (Hubli), Karnataka</p>
                 <p class="commitment">Your Journey, Our Priority!</p>
             </div>
             <div class="footer-contact">
@@ -448,6 +538,9 @@
             <div class="footer-address">
                 <h4>Address</h4>
                 <p><i class="fas fa-map-marker-alt"></i> Rapid Travels,<br>Plot#138, Manoj Paradise, KDO Residency, A12 2nd Floor,<br>Keshwapur, Hubballi – 580023,<br>Karnataka, India</p>
+                <div class="footer-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3847.5!2d75.1240!3d15.3647!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb8d7d5e5e5e5e5%3A0x0!2sKeshwapur%2C%20Hubballi%2C%20Karnataka%20580023!5e0!3m2!1sen!2sin!4v1" width="100%" height="150" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
             </div>
         </div>
         <div class="footer-bottom"><p>&copy; 2026 Rapid Travels. All rights reserved.</p></div>
