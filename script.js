@@ -341,28 +341,51 @@ const TICKET_CLASSES = {
     Bus:    ['Seater', 'Semi-Sleeper', 'Sleeper', 'Volvo / AC Seater', 'Volvo / AC Sleeper'],
     Flight: ['Economy', 'Premium Economy', 'Business']
 };
+const DOB_REQUIRED_TYPES = ['Train', 'Flight'];
+
 function updateTicketClass() {
     const type = document.getElementById('tkt-type')?.value;
     const sel  = document.getElementById('tkt-class');
     if (!sel || !type) return;
     const opts = TICKET_CLASSES[type] || TICKET_CLASSES.Train;
     sel.innerHTML = opts.map(o => `<option value="${o}">${o}</option>`).join('');
+    // Show/hide DOB fields based on type
+    const needsDob = DOB_REQUIRED_TYPES.includes(type);
+    const p1Wrap = document.getElementById('tkt-dob-p1-wrap');
+    if (p1Wrap) p1Wrap.style.display = needsDob ? '' : 'none';
+    updatePaxNames(); // regenerate extra pax fields with/without DOB
 }
 window.updateTicketClass = updateTicketClass;
 
 // ==================== DYNAMIC PASSENGER NAMES ====================
 function updatePaxNames() {
-    const pax      = parseInt(document.getElementById('tkt-pax')?.value || 1, 10);
+    const pax       = parseInt(document.getElementById('tkt-pax')?.value || 1, 10);
+    const type      = document.getElementById('tkt-type')?.value || 'Train';
+    const needsDob  = DOB_REQUIRED_TYPES.includes(type);
     const container = document.getElementById('tkt-extra-pax');
     if (!container) return;
     container.innerHTML = '';
+    const today = new Date().toISOString().split('T')[0];
     for (let i = 2; i <= pax; i++) {
+        const dobField = needsDob
+            ? `<div class="form-group" style="margin-top:6px;">
+                <label style="font-weight:500;font-size:0.88rem;"><i class="fas fa-birthday-cake"></i> Passenger ${i} Date of Birth *</label>
+                <input type="date" id="tkt-dob-${i}" max="${today}">
+               </div>`
+            : '';
         const div = document.createElement('div');
-        div.className = 'form-group';
-        div.innerHTML = `<label><i class="fas fa-user"></i> Passenger ${i} Name</label>
-            <input type="text" id="tkt-pax-name-${i}" placeholder="Full name of passenger ${i}">`;
+        div.style.borderTop = '1px dashed rgba(201,162,39,0.3)';
+        div.style.paddingTop = '10px';
+        div.style.marginTop = '10px';
+        div.innerHTML = `<div class="form-group">
+            <label><i class="fas fa-user"></i> Passenger ${i} Name</label>
+            <input type="text" id="tkt-pax-name-${i}" placeholder="Full name of passenger ${i}">
+           </div>${dobField}`;
         container.appendChild(div);
     }
+    // Also set max date on P1 DOB if visible
+    const dob1 = document.getElementById('tkt-dob-1');
+    if (dob1 && !dob1.max) dob1.max = today;
 }
 window.updatePaxNames = updatePaxNames;
 
@@ -384,12 +407,23 @@ function sendTicketEnquiry() {
     }
     if (!/^\d{10}$/.test(phone)) { showToast('Enter a valid 10-digit phone number.', 'error'); return; }
 
-    // Collect extra passenger names
-    const paxNames = [name];
-    for (let i = 2; i <= pax; i++) {
-        const v = document.getElementById(`tkt-pax-name-${i}`)?.value.trim();
-        if (v) paxNames.push(v);
+    const needsDob = DOB_REQUIRED_TYPES.includes(type);
+
+    // Validate P1 DOB if required
+    if (needsDob) {
+        const dob1 = document.getElementById('tkt-dob-1')?.value;
+        if (!dob1) { showToast('Date of Birth is required for each passenger (Train/Flight).', 'error'); return; }
     }
+
+    // Collect all passenger names + DOBs
+    const passengers = [{ name, dob: needsDob ? (document.getElementById('tkt-dob-1')?.value || '') : '' }];
+    for (let i = 2; i <= pax; i++) {
+        const n   = document.getElementById(`tkt-pax-name-${i}`)?.value.trim() || '';
+        const dob = needsDob ? (document.getElementById(`tkt-dob-${i}`)?.value || '') : '';
+        if (needsDob && !dob && n) { showToast(`Date of Birth missing for Passenger ${i}.`, 'error'); return; }
+        passengers.push({ name: n, dob });
+    }
+    const paxNames = passengers.map(p => p.name);
 
     let msg = `*TICKET BOOKING ENQUIRY – Rapid Travels*\n\n`;
     msg += `Ticket Type: ${type} Ticket\n`;
@@ -397,7 +431,11 @@ function sendTicketEnquiry() {
     msg += `Travel Date: ${formatDateIST(date)}\n`;
     msg += `Class: ${cls || 'Any'}\n`;
     msg += `Passengers: ${pax}\n`;
-    paxNames.forEach((n, idx) => { msg += `  P${idx + 1}: ${n}\n`; });
+    passengers.forEach((p, idx) => {
+        msg += `  P${idx + 1}: ${p.name || '—'}`;
+        if (needsDob && p.dob) msg += ` (DOB: ${formatDateIST(p.dob)})`;
+        msg += '\n';
+    });
     msg += `Contact Phone: ${phone}\n`;
     if (notes) msg += `Notes: ${notes}\n`;
     msg += `\nPlease confirm availability and charges.`;
@@ -409,7 +447,7 @@ function sendTicketEnquiry() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'submitTicketEnquiry',
-                data: { type: type + ' Ticket', from, to, date, cls, pax, paxNames, phone, notes }
+                data: { type: type + ' Ticket', from, to, date, cls, pax, passengers, phone, notes }
             })
         }).catch(() => {}); // silent — WhatsApp is the primary channel
     }
