@@ -37,8 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
     loadConfig();
     setupDatePicker();
     setupTripTypeToggle();
+    setupServiceTypeToggle();
     setupMultiStop();
     setupFormSubmit();
+    restoreFromLocalStorage();
     removeLoadingOverlay();
 });
 
@@ -85,7 +87,16 @@ function updateFooterHours() {
 // ==================== DATE & TIME VALIDATION ====================
 function setupDatePicker() {
     let inp = document.getElementById('journeyDate');
-    if (inp) inp.min = new Date().toISOString().split('T')[0];
+    if (!inp) return;
+    const now = new Date();
+    // If current time is past 22:00, block today — earliest booking is tomorrow
+    const minDate = now.getHours() >= 22
+        ? new Date(now.getTime() + 24 * 60 * 60 * 1000)
+        : now;
+    inp.min = minDate.toISOString().split('T')[0];
+    // Also set ticket date min
+    let tktDate = document.getElementById('tkt-date');
+    if (tktDate) tktDate.min = minDate.toISOString().split('T')[0];
 }
 
 function isPastDateTime(dateStr, timeStr) {
@@ -93,6 +104,71 @@ function isPastDateTime(dateStr, timeStr) {
     let now = new Date();
     let minAllowed = new Date(now.getTime() + 60 * 60 * 1000); // 1 hour buffer
     return sel < minAllowed;
+}
+
+// ==================== LOCALSTORAGE: remember name & phone ====================
+function restoreFromLocalStorage() {
+    const name = localStorage.getItem('rpc_name');
+    const phone = localStorage.getItem('rpc_phone');
+    if (name) { let el = document.getElementById('fullName'); if (el) el.value = name; }
+    if (phone) { let el = document.getElementById('phone'); if (el) el.value = phone; }
+}
+
+function saveToLocalStorage(name, phone) {
+    if (name) localStorage.setItem('rpc_name', name);
+    if (phone) localStorage.setItem('rpc_phone', phone);
+}
+
+// ==================== SERVICE TYPE TOGGLE (ride vs ticket) ====================
+const TICKET_SERVICES = ['Train Ticket Booking', 'Bus Ticket Booking', 'Flight Ticket Booking'];
+
+function setupServiceTypeToggle() {
+    const st = document.getElementById('serviceType');
+    if (!st) return;
+    st.addEventListener('change', applyServiceMode);
+}
+
+function applyServiceMode() {
+    const st = document.getElementById('serviceType');
+    const isTicket = TICKET_SERVICES.includes(st.value);
+    const rideFields = ['tripType', 'pickup', 'drop', 'roundTripFields', 'multiStopFields', 'passengers', 'luggage', 'pickupTime'];
+    const rideLabels = document.querySelectorAll('.ride-only');
+    rideFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.closest('.form-group, div') && (el.parentElement.style.display = isTicket ? 'none' : '');
+            // For named fields wrap in form-group check
+            const grp = el.closest('.form-group');
+            if (grp) grp.style.display = isTicket ? 'none' : '';
+            if (id === 'roundTripFields' || id === 'multiStopFields') el.style.display = 'none';
+        }
+    });
+    // Also hide the tripType row
+    const tt = document.getElementById('tripType');
+    if (tt) { const grp = tt.closest('.form-group'); if (grp) grp.style.display = isTicket ? 'none' : ''; }
+    // Pickup & Drop
+    ['pickup','drop','pickupTime'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { const grp = el.closest('.form-group'); if (grp) grp.style.display = isTicket ? 'none' : ''; }
+    });
+    // Passengers & luggage row
+    const paxGrp = document.getElementById('passengers')?.closest('.form-row');
+    if (paxGrp) paxGrp.style.display = isTicket ? 'none' : '';
+    // Journey date row label
+    const jdGrp = document.getElementById('journeyDate')?.closest('.form-row');
+    if (jdGrp) jdGrp.style.display = isTicket ? 'none' : '';
+    // Ticket hint
+    let hint = document.getElementById('ticketHint');
+    if (isTicket && !hint) {
+        hint = document.createElement('div');
+        hint.id = 'ticketHint';
+        hint.style.cssText = 'background:#fff3cd;border-radius:8px;padding:14px;margin-bottom:16px;font-size:0.9rem;color:#856404;';
+        hint.innerHTML = '<i class="fas fa-info-circle"></i> For ticket bookings, please use the <strong>Book a Ticket Online</strong> section below — it has a dedicated form. Or just describe your requirement in the Landmark / Instructions field above.';
+        const form = document.getElementById('bookingForm');
+        form.insertBefore(hint, form.querySelector('.form-group'));
+    } else if (!isTicket && hint) {
+        hint.remove();
+    }
 }
 
 // ==================== TRIP TYPE TOGGLE ====================
@@ -237,6 +313,39 @@ async function saveBookingToSheet(data) {
     } catch (e) { console.log(e); return { success: false }; }
 }
 
+// ==================== TICKET BOOKING ENQUIRY (WhatsApp direct) ====================
+function sendTicketEnquiry() {
+    const type  = document.getElementById('tkt-type')?.value;
+    const name  = document.getElementById('tkt-name')?.value.trim();
+    const phone = document.getElementById('tkt-phone')?.value.trim();
+    const from  = document.getElementById('tkt-from')?.value.trim();
+    const to    = document.getElementById('tkt-to')?.value.trim();
+    const date  = document.getElementById('tkt-date')?.value;
+    const pax   = document.getElementById('tkt-pax')?.value;
+    const cls   = document.getElementById('tkt-class')?.value.trim();
+    const notes = document.getElementById('tkt-notes')?.value.trim();
+
+    if (!name || !phone || !from || !to || !date) {
+        showToast('Please fill Name, Phone, From, To and Travel Date.', 'error');
+        return;
+    }
+    if (!/^\d{10}$/.test(phone)) { showToast('Enter a valid 10-digit phone number.', 'error'); return; }
+
+    let msg = `*TICKET BOOKING ENQUIRY – Rapid Travels*\n\n`;
+    msg += `Ticket Type: ${type}\n`;
+    msg += `Name: ${name}\n`;
+    msg += `Phone: ${phone}\n`;
+    msg += `From: ${from}\nTo: ${to}\n`;
+    msg += `Travel Date: ${formatDateIST(date)}\n`;
+    msg += `Passengers: ${pax || 1}\n`;
+    if (cls)   msg += `Class / Preference: ${cls}\n`;
+    if (notes) msg += `Notes: ${notes}\n`;
+    msg += `\nPlease confirm availability and charges.`;
+
+    window.open(`https://wa.me/919480324895?text=${encodeURIComponent(msg)}`, '_blank');
+}
+window.sendTicketEnquiry = sendTicketEnquiry;
+
 async function handleFormSubmit(e) {
     e.preventDefault();
     if (isSubmitting) return;                 // ignore a second tap while a submit is in flight
@@ -260,6 +369,7 @@ async function handleFormSubmit(e) {
         let saved = await saveBookingToSheet(bookingData);
         if (!saved.success) { showToast('Failed to save booking. Please try again.', 'error'); return; }
         window.currentBookingData = bookingData;
+        saveToLocalStorage(bookingData.fullName, bookingData.phone);
         showPostSubmitModal(bookingData);
         currentBookingId = null;              // booking succeeded; next booking gets a fresh ID
     } finally {
@@ -285,7 +395,7 @@ function showPostSubmitModal(data) {
     let modal = document.getElementById('postSubmitModal');
     if (!modal) { modal = document.createElement('div'); modal.id = 'postSubmitModal'; modal.className = 'modal-overlay'; document.body.appendChild(modal); }
     const formattedJourney = formatDateTimeIST(data.journeyDate, data.pickupTime);
-    modal.innerHTML = `<div class="modal"><div class="modal-header" style="background:#27ae60;"><h3><i class="fas fa-check-circle"></i> Booking Submitted Successfully!</h3><button class="modal-close" onclick="closePostSubmitModal()">&times;</button></div><div class="modal-body" style="text-align:center;"><i class="fas fa-save" style="font-size:48px; color:#27ae60; margin-bottom:15px;"></i><p>Your booking has been saved. Booking ID: <strong>${data.bookingId}</strong></p><p>Journey: ${formattedJourney}</p><p>Would you like to send the details via WhatsApp to complete the request?</p><div class="modal-actions" style="justify-content:center; margin-top:20px;"><button class="btn-cancel" onclick="closePostSubmitModal()">Close</button><button class="btn-whatsapp" onclick="sendWhatsAppFromModal()"><i class="fab fa-whatsapp"></i> Send via WhatsApp</button></div></div></div>`;
+    modal.innerHTML = `<div class="modal"><div class="modal-header" style="background:#27ae60;"><h3><i class="fas fa-check-circle"></i> Booking Submitted Successfully!</h3><button class="modal-close" onclick="closePostSubmitModal()">&times;</button></div><div class="modal-body" style="text-align:center;"><i class="fas fa-save" style="font-size:48px; color:#27ae60; margin-bottom:15px;"></i><p>Booking ID: <strong id="modalBookingId" style="cursor:pointer;color:#0d2145;" title="Click to copy">${data.bookingId}</strong> <button onclick="copyBookingId('${data.bookingId}')" style="background:none;border:1px solid #ccc;border-radius:4px;padding:2px 8px;cursor:pointer;font-size:0.75rem;margin-left:6px;"><i class="fas fa-copy"></i> Copy</button></p><p>Journey: ${formattedJourney}</p><p style="margin-top:10px;">Would you like to send the details via WhatsApp to complete the request?</p><div class="modal-actions" style="justify-content:center; margin-top:20px;"><button class="btn-cancel" onclick="closePostSubmitModal()">Close</button><button class="btn-whatsapp" onclick="sendWhatsAppFromModal()"><i class="fab fa-whatsapp"></i> Send via WhatsApp</button></div></div></div>`;
     setTimeout(() => modal.classList.add('active'), 10);
 }
 
@@ -344,7 +454,12 @@ function showToast(msg, type = 'success') {
     setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
+function copyBookingId(id) {
+    navigator.clipboard.writeText(id).then(() => showToast('Booking ID copied!', 'success')).catch(() => showToast(id, 'success'));
+}
+
 // Global functions for modal buttons
 window.closeNoVehiclesModal = closeNoVehiclesModal;
 window.closePostSubmitModal = closePostSubmitModal;
 window.sendWhatsAppFromModal = sendWhatsAppFromModal;
+window.copyBookingId = copyBookingId;
