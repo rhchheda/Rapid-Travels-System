@@ -6,16 +6,28 @@
     <title>Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi</title>
     <meta name="description" content="Rapid Travels – Hubballi (Hubli) Tata Indica cab service for airport pickup, railway station transfer, outstation trips, daily travel & online train/bus/flight ticket booking. Call 94803 24895.">
 
-    <!-- Open Graph / Social Share -->
-    <meta property="og:title" content="Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi">
-    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi (Hubli), Karnataka.">
-    <meta property="og:image" content="Rapid-Travels.jpg">
+    <!-- Open Graph / Social Share (WhatsApp, Facebook, etc.) -->
+    <!-- IMPORTANT: Replace YOUR_DOMAIN below with your actual deployed URL, e.g. https://rapidtravels.in -->
+    <meta property="og:site_name" content="Rapid Travels">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://YOUR_DOMAIN/index.html">
+    <meta property="og:title" content="Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi">
+    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi (Hubli), Karnataka. Call 94803 24895.">
+    <meta property="og:image" content="https://YOUR_DOMAIN/Rapid-Travels.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Rapid Travels – Tata Indica Car Service, Hubballi">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Rapid Travels | Tata Indica Car Service – Hubballi">
-    <meta name="twitter:description" content="Your Journey, Our Priority! Reliable Tata Indica car service in Hubballi.">
+    <meta name="twitter:description" content="Your Journey, Our Priority! Reliable Tata Indica car service in Hubballi. Call 94803 24895.">
+    <meta name="twitter:image" content="https://YOUR_DOMAIN/Rapid-Travels.jpg">
 
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
 
     <!-- Schema.org LocalBusiness -->
     <script type="application/ld+json">
@@ -391,6 +403,7 @@
                         </select>
                     </div>
                     <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Pickup Location *</label><input type="text" id="pickup" required placeholder="e.g., Hubballi Station, Near Kamat Hotel"></div>
+                    <div id="fare-quick-picks" class="fare-quick-picks"></div>
                     <div class="form-group"><label><i class="fas fa-flag-checkered"></i> <span id="dropLabel">Drop Location *</span></label><input type="text" id="drop" required placeholder="e.g., Hubballi Airport T1"></div>
                     <div id="roundTripFields" style="display:none;">
                         <div class="form-row">
@@ -477,11 +490,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label><i class="fas fa-map-marker-alt"></i> From *</label>
-                            <input type="text" id="tkt-from" placeholder="Origin city / station">
+                            <input type="text" id="tkt-from" placeholder="Station name or code" list="dl-stations" autocomplete="off">
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-flag-checkered"></i> To *</label>
-                            <input type="text" id="tkt-to" placeholder="Destination city / station">
+                            <input type="text" id="tkt-to" placeholder="Station name or code" list="dl-stations" autocomplete="off">
                         </div>
                     </div>
                     <div class="form-row">
@@ -518,10 +531,15 @@
                         <label><i class="fas fa-info-circle"></i> Additional Notes</label>
                         <textarea id="tkt-notes" rows="2" placeholder="Train number, seat preference, any special requirement..."></textarea>
                     </div>
+                    <!-- Booking charges notice — updates based on ticket type -->
+                    <div id="tkt-charges-notice" style="background:rgba(201,162,39,0.12);border:1px solid rgba(201,162,39,0.35);border-radius:6px;padding:10px 14px;margin-bottom:12px;font-size:0.82rem;color:rgba(255,255,255,0.8);line-height:1.6;">
+                        <strong style="color:#c9a227;">ℹ️ Service Charges Applicable:</strong><br>
+                        <span id="tkt-charge-text">Train: ₹15 (Sleeper/2S) or ₹30 (AC classes) per ticket + 5% GST on service fee (IRCTC norms). Final charges confirmed on WhatsApp before booking.</span>
+                    </div>
                     <button class="ticket-submit-btn" onclick="sendTicketEnquiry()">
                         <i class="fab fa-whatsapp"></i> Send Enquiry via WhatsApp
                     </button>
-                    <p class="form-note" style="color:rgba(255,255,255,0.6);"><i class="fas fa-shield-alt"></i> We'll confirm availability and charges on WhatsApp.</p>
+                    <p class="form-note" style="color:rgba(255,255,255,0.6);"><i class="fas fa-shield-alt"></i> We'll confirm availability and charges on WhatsApp before booking.</p>
                 </div>
             </div>
         </div>
