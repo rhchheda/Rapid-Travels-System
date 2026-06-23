@@ -137,3 +137,37 @@ body { font-family:'Poppins',sans-serif; color:var(--text-dark); line-height:1.6
 .btn-whatsapp { background:#25D366; color:white; }
 .btn-whatsapp:hover { background:#128C7E; }
 @media (max-width:768px) { .hero h1 { font-size:2rem; } .booking-wrapper { grid-template-columns:1fr; } .form-row { grid-template-columns:1fr; gap:15px; } .fleet-card { flex-direction:column; } .advantage-grid { grid-template-columns:1fr; gap:20px; } .fleet-gallery { grid-template-columns:1fr; max-width:100%; } }
+
+/* ── Floating WhatsApp button ── */
+.wa-float { position:fixed; bottom:80px; right:20px; width:58px; height:58px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:1050; text-decoration:none; box-shadow:0 4px 14px rgba(37,211,102,0.55); }
+.wa-float i { font-size:30px; color:#fff; }
+@keyframes waPulse { 0%,100%{box-shadow:0 4px 14px rgba(37,211,102,0.55);} 50%{box-shadow:0 4px 28px rgba(37,211,102,0.85);} }
+.wa-float { animation:waPulse 2.2s infinite; }
+.wa-float-tooltip { position:absolute; right:66px; background:#0d2145; color:#e8c84a; font-size:0.75rem; font-weight:600; padding:5px 10px; border-radius:6px; white-space:nowrap; opacity:0; transition:opacity 0.2s; pointer-events:none; }
+.wa-float:hover .wa-float-tooltip { opacity:1; }
+
+/* ── Nav phone gold shimmer ── */
+@keyframes goldShimmer { 0%,100%{box-shadow:0 0 0 rgba(201,162,39,0);} 50%{box-shadow:0 0 14px rgba(201,162,39,0.75);} }
+.nav-phone { animation:goldShimmer 2.8s infinite; }
+
+/* ── Ticket booking section ── */
+.ticket-booking { padding:70px 0; background:#f8f9fa; }
+.ticket-form-wrap { max-width:720px; margin:0 auto; background:linear-gradient(135deg,#0d2145 0%,#1a3a6e 100%); border-radius:16px; padding:36px; border:2px solid #c9a227; }
+.ticket-form-wrap .form-group label { color:#e8c84a; }
+.ticket-form-wrap .form-group input,
+.ticket-form-wrap .form-group select,
+.ticket-form-wrap .form-group textarea { background:rgba(255,255,255,0.1); border-color:rgba(201,162,39,0.4); color:#fff; }
+.ticket-form-wrap .form-group input::placeholder,
+.ticket-form-wrap .form-group textarea::placeholder { color:rgba(255,255,255,0.45); }
+.ticket-form-wrap .form-group select option { background:#0d2145; color:#fff; }
+.ticket-submit-btn { width:100%; padding:14px; background:#c9a227; color:#0d2145; border:none; border-radius:8px; font-size:1.1rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s; margin-top:6px; }
+.ticket-submit-btn:hover { background:#e8c84a; transform:translateY(-2px); }
+
+/* ── Admin booking age colors ── */
+.age-amber { background:#fff8e1 !important; }
+.age-amber td { background:#fff8e1 !important; }
+.age-red { background:#ffebee !important; }
+.age-red td { background:#ffebee !important; }
+
+/* ── Footer map ── */
+.footer-map { margin-top:12px; border-radius:8px; overflow:hidden; border:2px solid rgba(201,162,39,0.4); }
