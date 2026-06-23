@@ -169,5 +169,13 @@ body { font-family:'Poppins',sans-serif; color:var(--text-dark); line-height:1.6
 .age-red { background:#ffebee !important; }
 .age-red td { background:#ffebee !important; }
 
+/* ── Fare quick-picks ── */
+.fare-quick-picks { margin:-6px 0 10px; min-height:0; }
+.fare-picks-label { font-size:0.8rem; color:#888; margin-bottom:6px; }
+.fare-pick-btn { display:inline-flex; align-items:center; gap:6px; margin:3px 4px 3px 0; padding:5px 12px; background:#f0f4ff; border:1.5px solid #1a3a6e; border-radius:20px; font-size:0.82rem; cursor:pointer; color:#0d2145; transition:all 0.2s; }
+.fare-pick-btn:hover { background:#0d2145; color:#fff; }
+.fare-badge { background:#c9a227; color:#0d2145; border-radius:10px; padding:1px 7px; font-weight:700; font-size:0.78rem; }
+.fare-pick-btn:hover .fare-badge { background:#fff; }
+
 /* ── Footer map ── */
 .footer-map { margin-top:12px; border-radius:8px; overflow:hidden; border:2px solid rgba(201,162,39,0.4); }
