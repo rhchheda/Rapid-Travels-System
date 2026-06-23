@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi</title>
-    <meta name="description" content="Rapid Travels – Hubballi Tata Indica Cab service for airport pickup, railway station transfer, outstation trips, daily travel & online train/bus/flight ticket booking. Call 94803 24895.">
+    <meta name="description" content="Rapid Travels – Hubballi (Hubli) Tata Indica cab service for airport pickup, railway station transfer, outstation trips, daily travel & online train/bus/flight ticket booking. Call 94803 24895.">
 
     <!-- Open Graph / Social Share -->
     <meta property="og:title" content="Rapid Travels | Tata Indica Car Service & Ticket Booking – Hubballi">
-    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi,Karnataka.">
+    <meta property="og:description" content="Your Journey, Our Priority! Reliable Tata Indica car service for airport, railway, outstation & daily travel in Hubballi (Hubli), Karnataka.">
     <meta property="og:image" content="Rapid-Travels.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -156,6 +156,30 @@
         /* Footer brand */
         .footer { background: var(--navy); border-top: 3px solid var(--gold); }
         .footer-brand h3, .footer-contact h4, .footer-hours h4, .footer-address h4 { color: var(--gold-light); }
+
+        /* Booking tabs */
+        .booking-tabs { display: flex; gap: 0; margin-bottom: 32px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+        .booking-tab { flex: 1; padding: 16px 10px; font-size: 1rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.25s; background: #e8edf2; color: #555; letter-spacing: 0.02em; }
+        .booking-tab.active { background: var(--navy); color: var(--gold-light); }
+        .booking-tab:first-child { border-radius: 12px 0 0 12px; }
+        .booking-tab:last-child  { border-radius: 0 12px 12px 0; }
+        .booking-tab:hover:not(.active) { background: #d0d8e4; }
+
+        /* Ticket form inside booking wrapper */
+        .ticket-panel { background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%); border-radius: 12px; overflow: hidden; }
+        .ticket-panel .form-header { background: linear-gradient(135deg, var(--navy-mid), #102860); }
+        .ticket-panel .booking-form { background: transparent; }
+        .ticket-panel .form-group label { color: var(--gold-light); }
+        .ticket-panel .form-group input,
+        .ticket-panel .form-group select,
+        .ticket-panel .form-group textarea { background: rgba(255,255,255,0.1); border-color: rgba(201,162,39,0.35); color: #fff; }
+        .ticket-panel .form-group input::placeholder,
+        .ticket-panel .form-group textarea::placeholder { color: rgba(255,255,255,0.4); }
+        .ticket-panel .form-group select option { background: #0d2145; color: #fff; }
+        .ticket-submit-btn { width:100%; padding:14px; background: var(--gold); color: var(--navy); border:none; border-radius:8px; font-size:1.05rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition:all 0.3s; margin-top:6px; }
+        .ticket-submit-btn:hover { background: var(--gold-light); transform:translateY(-2px); }
+        .pax-names { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+        @media(max-width:640px){ .pax-names { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -177,7 +201,7 @@
     <div class="container">
         <div class="nav-brand">
             <h1><i class="fas fa-car" style="color:var(--gold);margin-right:8px;"></i>Rapid Travels</h1>
-            <span class="tagline">Tata Indica Car Service | Hubballi, Karnataka</span>
+            <span class="tagline">Tata Indica Car Service | Hubballi (Hubli), Karnataka</span>
         </div>
         <div class="nav-contact">
             <a href="tel:+919480324895" class="nav-phone"><i class="fas fa-phone"></i> 94803 24895</a>
@@ -295,11 +319,23 @@
     </div>
 </section>
 
-<!-- Booking Section -->
+<!-- Combined Booking Section (Tabbed) -->
 <section class="booking" id="booking">
     <div class="container">
+        <h2 class="section-title">Book with Rapid Travels</h2>
+
+        <!-- Tab Switcher -->
+        <div class="booking-tabs">
+            <button class="booking-tab active" id="tab-ride" onclick="switchBookingTab('ride')">
+                🚗 Book a Ride
+            </button>
+            <button class="booking-tab" id="tab-ticket" onclick="switchBookingTab('ticket')">
+                🎫 Book a Ticket
+            </button>
+        </div>
+
         <div class="booking-wrapper">
-            <!-- LEFT COLUMN: Info Card -->
+            <!-- LEFT: Info Card (always visible) -->
             <div class="booking-info">
                 <div class="info-card">
                     <h3><i class="fas fa-headset"></i> Why Book With Us?</h3>
@@ -309,7 +345,7 @@
                         <li><i class="fas fa-check-circle"></i> Well-Maintained Tata Indica</li>
                         <li><i class="fas fa-check-circle"></i> On-Time Guarantee</li>
                         <li><i class="fas fa-check-circle"></i> Best Local Rates</li>
-                        <li><i class="fas fa-check-circle"></i> Online Ticket Booking</li>
+                        <li><i class="fas fa-check-circle"></i> Train / Bus / Flight Tickets</li>
                     </ul>
                     <div class="ceo-info">
                         <img src="https://ui-avatars.com/api/?background=0d2145&color=c9a227&name=Manish+Nagda" alt="Manish Nagda" class="ceo-avatar">
@@ -321,15 +357,14 @@
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: Booking Form -->
-            <div class="booking-form-container">
+            <!-- RIGHT: Ride Form -->
+            <div id="ride-panel" class="booking-form-container">
                 <div class="form-header">
                     <h2>Book Your Ride</h2>
-                    <p>Fill the details below. We'll get back to you within 20 minutes.</p>
+                    <p>Fill the details below. We'll respond within 20 minutes.</p>
                 </div>
                 <form id="bookingForm" class="booking-form">
                     <div style="display:none;"><label for="website">Website</label><input type="text" id="website" name="website" value=""></div>
-
                     <div class="form-group"><label><i class="fas fa-user"></i> Full Name *</label><input type="text" id="fullName" required placeholder="Enter your full name"></div>
                     <div class="form-row">
                         <div class="form-group"><label><i class="fas fa-phone"></i> Phone Number *</label><input type="tel" id="phone" required placeholder="10-digit mobile number" pattern="[0-9]{10}"></div>
@@ -346,9 +381,6 @@
                             <option value="Market Trip">Market Trip</option>
                             <option value="Daily Travel">Daily Travel</option>
                             <option value="Outstation Trip">Outstation Trip</option>
-                            <option value="Train Ticket Booking">Train Ticket Booking</option>
-                            <option value="Bus Ticket Booking">Bus Ticket Booking</option>
-                            <option value="Flight Ticket Booking">Flight Ticket Booking</option>
                         </select>
                     </div>
                     <div class="form-group"><label><i class="fas fa-route"></i> Trip Type *</label>
@@ -365,7 +397,7 @@
                             <div class="form-group"><label><i class="fas fa-calendar-alt"></i> Return Date *</label><input type="date" id="returnDate"></div>
                             <div class="form-group"><label><i class="fas fa-clock"></i> Return Pickup Time *</label><input type="time" id="returnTime"></div>
                         </div>
-                        <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Return Drop Location (if different)</label><input type="text" id="returnDrop" placeholder="Leave blank if same as original pickup"></div>
+                        <div class="form-group"><label><i class="fas fa-map-marker-alt"></i> Return Drop (if different)</label><input type="text" id="returnDrop" placeholder="Leave blank if same as pickup"></div>
                     </div>
                     <div id="multiStopFields" style="display:none;">
                         <div id="stopsContainer">
@@ -379,7 +411,7 @@
                         <button type="button" id="addStopBtn" class="add-stop-btn"><i class="fas fa-plus"></i> Add another stop (max 3)</button>
                         <small class="form-note">You can add up to 3 intermediate stops.</small>
                     </div>
-                    <div class="form-group"><label><i class="fas fa-info-circle"></i> Landmark / Special Instructions</label><textarea id="landmark" rows="2" placeholder="Gate/Terminal number, building name, any specific instructions..."></textarea></div>
+                    <div class="form-group"><label><i class="fas fa-info-circle"></i> Landmark / Special Instructions</label><textarea id="landmark" rows="2" placeholder="Gate/Terminal number, building name, specific instructions..."></textarea></div>
                     <div class="form-row">
                         <div class="form-group"><label><i class="fas fa-calendar"></i> Journey Date *</label><input type="date" id="journeyDate" required></div>
                         <div class="form-group"><label><i class="fas fa-clock"></i> Pickup Time *</label><input type="time" id="pickupTime" required></div>
@@ -393,7 +425,7 @@
                                 <option value="3">3 Passengers</option>
                                 <option value="4">4 Passengers</option>
                             </select>
-                            <small style="color:#e67e22;">Max 4 passengers. For more please call 94803 24895.</small>
+                            <small style="color:#e67e22;">Max 4 passengers. For more call 94803 24895.</small>
                         </div>
                         <div class="form-group">
                             <label><i class="fas fa-suitcase"></i> Luggage</label>
@@ -407,11 +439,85 @@
                     </div>
                     <div class="form-group checkbox-group">
                         <label class="checkbox-label"><input type="checkbox" id="emailCopy"> <span><i class="fas fa-envelope"></i> Email me a copy of this booking</span></label>
-                        <small>We'll send trip details to your email address.</small>
+                        <small>We'll send trip details to your email.</small>
                     </div>
                     <button type="submit" class="submit-btn" id="submitBtn"><span class="btn-text">Submit Booking</span><i class="fas fa-save"></i></button>
                     <p class="form-note"><i class="fas fa-shield-alt"></i> Your details are secure. We'll respond within 20 minutes on WhatsApp.</p>
                 </form>
+            </div>
+
+            <!-- RIGHT: Ticket Form (hidden by default) -->
+            <div id="ticket-panel" class="booking-form-container ticket-panel" style="display:none;">
+                <div class="form-header">
+                    <h2>Book a Ticket</h2>
+                    <p>Train, Bus or Flight — we'll book it for you.</p>
+                </div>
+                <div class="booking-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-ticket-alt"></i> Ticket Type *</label>
+                            <select id="tkt-type" onchange="updateTicketClass()">
+                                <option value="Train">🚂 Train Ticket</option>
+                                <option value="Bus">🚌 Bus Ticket</option>
+                                <option value="Flight">✈️ Flight Ticket</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-chair"></i> Class / Preference</label>
+                            <select id="tkt-class">
+                                <option value="Sleeper (SL)">Sleeper (SL)</option>
+                                <option value="3rd AC (3A)">3rd AC (3A)</option>
+                                <option value="2nd AC (2A)">2nd AC (2A)</option>
+                                <option value="1st AC (1A)">1st AC (1A)</option>
+                                <option value="Chair Car (CC)">Chair Car (CC)</option>
+                                <option value="Executive Chair (EC)">Executive Chair (EC)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-map-marker-alt"></i> From *</label>
+                            <input type="text" id="tkt-from" placeholder="Origin city / station">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-flag-checkered"></i> To *</label>
+                            <input type="text" id="tkt-to" placeholder="Destination city / station">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label><i class="fas fa-calendar"></i> Travel Date *</label>
+                            <input type="date" id="tkt-date">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-users"></i> No. of Passengers *</label>
+                            <select id="tkt-pax" onchange="updatePaxNames()">
+                                <option value="1">1</option><option value="2">2</option>
+                                <option value="3">3</option><option value="4">4</option>
+                                <option value="5">5</option><option value="6">6</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Passenger Names (P1 always shown, P2+ dynamic) -->
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Passenger 1 Name & Phone *</label>
+                        <div class="form-row">
+                            <input type="text" id="tkt-name" placeholder="Full name">
+                            <input type="tel" id="tkt-phone" placeholder="10-digit mobile">
+                        </div>
+                    </div>
+                    <div id="tkt-extra-pax"></div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-info-circle"></i> Additional Notes</label>
+                        <textarea id="tkt-notes" rows="2" placeholder="Train number, seat preference, any special requirement..."></textarea>
+                    </div>
+                    <button class="ticket-submit-btn" onclick="sendTicketEnquiry()">
+                        <i class="fab fa-whatsapp"></i> Send Enquiry via WhatsApp
+                    </button>
+                    <p class="form-note" style="color:rgba(255,255,255,0.6);"><i class="fas fa-shield-alt"></i> We'll confirm availability and charges on WhatsApp.</p>
+                </div>
             </div>
         </div>
     </div>
@@ -452,65 +558,6 @@
     </div>
 </section>
 
-<!-- Ticket Booking Enquiry Section -->
-<section class="ticket-booking">
-    <div class="container">
-        <h2 class="section-title">Book a Ticket Online</h2>
-        <div class="ticket-form-wrap">
-            <div class="form-row" style="margin-bottom:0;">
-                <div class="form-group">
-                    <label><i class="fas fa-ticket-alt"></i> Ticket Type *</label>
-                    <select id="tkt-type">
-                        <option value="Train Ticket">🚂 Train Ticket</option>
-                        <option value="Bus Ticket">🚌 Bus Ticket</option>
-                        <option value="Flight Ticket">✈️ Flight Ticket</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-user"></i> Your Name *</label>
-                    <input type="text" id="tkt-name" placeholder="Full name">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fas fa-phone"></i> Phone *</label>
-                    <input type="tel" id="tkt-phone" placeholder="10-digit mobile">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-users"></i> Passengers</label>
-                    <input type="number" id="tkt-pax" placeholder="Number of seats" min="1" max="9" value="1">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fas fa-map-marker-alt"></i> From *</label>
-                    <input type="text" id="tkt-from" placeholder="Origin city / station">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-flag-checkered"></i> To *</label>
-                    <input type="text" id="tkt-to" placeholder="Destination city / station">
-                </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label><i class="fas fa-calendar"></i> Travel Date *</label>
-                    <input type="date" id="tkt-date">
-                </div>
-                <div class="form-group">
-                    <label><i class="fas fa-chair"></i> Class / Preference</label>
-                    <input type="text" id="tkt-class" placeholder="e.g. Sleeper, 3AC, Economy">
-                </div>
-            </div>
-            <div class="form-group">
-                <label><i class="fas fa-info-circle"></i> Additional Notes</label>
-                <textarea id="tkt-notes" rows="2" placeholder="Any special requirements, train number, etc."></textarea>
-            </div>
-            <button class="ticket-submit-btn" onclick="sendTicketEnquiry()">
-                <i class="fab fa-whatsapp"></i> Send Ticket Enquiry via WhatsApp
-            </button>
-        </div>
-    </div>
-</section>
 
 <!-- CTA Strip -->
 <div class="cta-strip">
@@ -525,7 +572,7 @@
         <div class="footer-content">
             <div class="footer-brand">
                 <h3><i class="fas fa-car" style="color:var(--gold);margin-right:6px;"></i>Rapid Travels</h3>
-                <p>Tata Indica Car Service | Hubballi, Karnataka</p>
+                <p>Tata Indica Car Service | Hubballi (Hubli), Karnataka</p>
                 <p class="commitment">Your Journey, Our Priority!</p>
             </div>
             <div class="footer-contact">
