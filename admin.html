@@ -51,6 +51,25 @@
         .btn-confirm-danger { background: #e74c3c; color: white; }
         .btn-confirm-go { background: #27ae60; color: white; }
         .btn-confirm-cancel { background: #e0e0e0; color: #333; }
+        /* Admin nav tabs */
+        .admin-nav { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+        .admin-nav button { padding: 9px 20px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; background: #e0e0e0; color: #333; font-size: 0.92rem; }
+        .admin-nav button.active { background: #0d2145; color: #c9a227; }
+        /* Feedback table */
+        .fb-card { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); display: flex; gap: 16px; align-items: flex-start; }
+        .fb-stars { color: #c9a227; font-size: 1.2rem; }
+        .fb-meta { font-size: 0.8rem; color: #888; margin-top: 4px; }
+        .fb-text { font-style: italic; margin: 8px 0; color: #333; }
+        .fb-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .approve-btn { background: #27ae60; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .reject-btn { background: #e74c3c; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-weight: 600; }
+        .status-badge { padding: 3px 10px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-published { background: #d4edda; color: #155724; }
+        .badge-rejected { background: #f8d7da; color: #721c24; }
+        .share-link-box { background: #f0f4ff; border: 1px solid #c9a227; border-radius: 6px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .share-link-box input { flex: 1; border: none; background: none; font-family: monospace; font-size: 0.88rem; outline: none; color: #0d2145; }
+        .share-link-box button { background: #0d2145; color: #c9a227; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-weight: 600; }
         @media (max-width: 768px) { th, td { font-size: 12px; padding: 8px; } }
     </style>
 </head>
@@ -64,25 +83,76 @@
     </div>
     <div id="dashboard" class="dashboard">
         <div class="header">
-            <h2>📋 Booking Management</h2>
+            <h2>📋 Rapid Travels — Admin</h2>
             <div>
                 <button class="change-pwd-btn" onclick="showChangePasswordModal()">Change Password</button>
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </div>
-        <div class="stats" id="stats"></div>
-        <div class="filters">
-            <input type="text" id="searchInput" placeholder="Search by name, phone, ID" onkeyup="filterTable()">
-            <select id="statusFilter" onchange="filterTable()"><option value="">All Status</option><option value="Pending">Pending</option><option value="Quoted">Quoted</option><option value="Confirmed">Confirmed</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select>
-            <button onclick="loadBookings()">Refresh</button>
-            <button onclick="exportCSV()" style="background:#0d2145;color:#c9a227;border:none;padding:8px 14px;border-radius:4px;cursor:pointer;font-weight:600;"><i class="fas fa-download"></i> Export CSV</button>
+
+        <!-- Admin Nav Tabs -->
+        <div class="admin-nav">
+            <button id="nav-bookings" class="active" onclick="switchAdminTab('bookings')">🚗 Bookings</button>
+            <button id="nav-tickets" onclick="switchAdminTab('tickets')">🎫 Ticket Enquiries</button>
+            <button id="nav-feedback" onclick="switchAdminTab('feedback')">⭐ Feedback</button>
         </div>
-        <div class="bookings-table">
-            <div id="tableLoader" class="loading">Loading bookings...</div>
-            <table id="bookingsTable" style="display:none;">
-                <thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Phone</th><th>Service</th><th>Trip</th><th>Pickup</th><th>Drop</th><th>Journey</th><th>Time</th><th>Status</th><th>Fare (₹)</th><th>Payment</th><th>Actions</th></tr></thead>
-                <tbody id="bookingsBody"></tbody>
-            </table>
+
+        <!-- BOOKINGS TAB -->
+        <div id="tab-bookings">
+            <div class="stats" id="stats"></div>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search by name, phone, ID" onkeyup="filterTable()">
+                <select id="statusFilter" onchange="filterTable()"><option value="">All Status</option><option value="Pending">Pending</option><option value="Quoted">Quoted</option><option value="Confirmed">Confirmed</option><option value="Completed">Completed</option><option value="Cancelled">Cancelled</option></select>
+                <button onclick="loadBookings()">Refresh</button>
+                <button onclick="exportCSV()" style="background:#0d2145;color:#c9a227;border:none;padding:8px 14px;border-radius:4px;cursor:pointer;font-weight:600;">&#8595; Export CSV</button>
+            </div>
+            <div class="bookings-table">
+                <div id="tableLoader" class="loading">Loading bookings...</div>
+                <table id="bookingsTable" style="display:none;">
+                    <thead><tr><th>ID</th><th>Date</th><th>Customer</th><th>Phone</th><th>Service</th><th>Trip</th><th>Pickup</th><th>Drop</th><th>Journey</th><th>Time</th><th>Status</th><th>Fare (₹)</th><th>Payment</th><th>Actions</th></tr></thead>
+                    <tbody id="bookingsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TICKET ENQUIRIES TAB -->
+        <div id="tab-tickets" style="display:none;">
+            <div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;">
+                <strong>Ticket Enquiries</strong>
+                <button onclick="loadTicketEnquiries()" style="padding:6px 14px;border:none;border-radius:4px;background:#0d2145;color:#c9a227;cursor:pointer;font-weight:600;">Refresh</button>
+            </div>
+            <div class="bookings-table">
+                <div id="ticketLoader" class="loading">Loading enquiries...</div>
+                <table id="ticketsTable" style="display:none;">
+                    <thead><tr><th>ID</th><th>Submitted</th><th>Type</th><th>From → To</th><th>Travel Date</th><th>Class</th><th>Pax</th><th>Names</th><th>Phone</th><th>Notes</th><th>Status</th></tr></thead>
+                    <tbody id="ticketsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- FEEDBACK TAB -->
+        <div id="tab-feedback" style="display:none;">
+            <div style="margin-bottom:16px;">
+                <strong>Share Feedback Link with Customer:</strong>
+                <div class="share-link-box" style="margin-top:8px;">
+                    <input type="text" id="feedbackLinkInput" value="" placeholder="Enter booking ID to generate link" oninput="updateFeedbackLink()">
+                    <button onclick="copyFeedbackLink()">Copy Link</button>
+                    <button onclick="shareFeedbackWA()" style="background:#25D366;color:white;border:none;padding:5px 12px;border-radius:4px;cursor:pointer;font-weight:600;">Share via WhatsApp</button>
+                </div>
+                <small style="color:#666;">Leave blank for a generic link. Include Booking ID to pre-fill customer form.</small>
+            </div>
+            <div style="margin-bottom:12px;display:flex;gap:10px;align-items:center;">
+                <strong>Feedback Moderation</strong>
+                <button onclick="loadFeedback()" style="padding:6px 14px;border:none;border-radius:4px;background:#0d2145;color:#c9a227;cursor:pointer;font-weight:600;">Refresh</button>
+                <select id="feedbackFilter" onchange="renderFeedback()" style="padding:6px;border-radius:4px;border:1px solid #ccc;">
+                    <option value="">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Published">Published</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+            <div id="feedbackLoader" class="loading" style="display:none;">Loading feedback...</div>
+            <div id="feedbackList"></div>
         </div>
     </div>
 </div>
@@ -444,8 +514,141 @@
         showToast('CSV exported!', 'success');
     }
 
+    // ── Admin Tab Switching ──────────────────────────────────────────────────
+    const ADMIN_TABS = ['bookings', 'tickets', 'feedback'];
+    function switchAdminTab(tab) {
+        ADMIN_TABS.forEach(t => {
+            document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
+            document.getElementById('nav-' + t).classList.toggle('active', t === tab);
+        });
+        if (tab === 'tickets' && !ticketsLoaded) loadTicketEnquiries();
+        if (tab === 'feedback' && !feedbackLoaded) loadFeedback();
+    }
+
+    // ── Ticket Enquiries ─────────────────────────────────────────────────────
+    let allTickets = [];
+    let ticketsLoaded = false;
+    async function loadTicketEnquiries() {
+        if (!authToken) return;
+        document.getElementById('ticketLoader').style.display = 'block';
+        document.getElementById('ticketsTable').style.display = 'none';
+        try {
+            const res = await fetch(`${GAS_URL}?action=getTicketEnquiries&token=${encodeURIComponent(authToken)}`);
+            const data = await res.json();
+            if (data.success) {
+                allTickets = data.enquiries || [];
+                renderTickets();
+                ticketsLoaded = true;
+            } else { showToast(data.error || 'Failed to load enquiries.', 'error'); }
+        } catch(e) { showToast('Network error loading ticket enquiries.', 'error'); }
+        finally {
+            document.getElementById('ticketLoader').style.display = 'none';
+            document.getElementById('ticketsTable').style.display = '';
+        }
+    }
+    function renderTickets() {
+        const tbody = document.getElementById('ticketsBody');
+        if (!allTickets.length) { tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;color:#888;">No ticket enquiries yet.</td></tr>'; return; }
+        tbody.innerHTML = allTickets.map(t => `
+            <tr>
+                <td style="font-size:0.8rem;color:#888;">${t['Enquiry ID'] || ''}</td>
+                <td>${formatDateIST(t['Submitted At'])}</td>
+                <td><strong>${t['Ticket Type'] || ''}</strong></td>
+                <td>${t['From'] || ''} → ${t['To'] || ''}</td>
+                <td>${t['Travel Date'] || ''}</td>
+                <td>${t['Class'] || ''}</td>
+                <td style="text-align:center;">${t['Passengers'] || ''}</td>
+                <td style="font-size:0.85rem;">${t['Pax Names'] || ''}</td>
+                <td><a href="tel:${t['Contact Phone']}">${t['Contact Phone'] || ''}</a></td>
+                <td style="font-size:0.82rem;color:#555;">${t['Notes'] || ''}</td>
+                <td><span class="status-badge badge-pending">${t['Status'] || 'New'}</span></td>
+            </tr>`).join('');
+    }
+
+    // ── Feedback ─────────────────────────────────────────────────────────────
+    let allFeedback = [];
+    let feedbackLoaded = false;
+    async function loadFeedback() {
+        if (!authToken) return;
+        document.getElementById('feedbackLoader').style.display = 'block';
+        document.getElementById('feedbackList').innerHTML = '';
+        try {
+            const res = await fetch(`${GAS_URL}?action=getAllFeedback&token=${encodeURIComponent(authToken)}`);
+            const data = await res.json();
+            if (data.success) {
+                allFeedback = data.feedback || [];
+                renderFeedback();
+                feedbackLoaded = true;
+            } else { showToast(data.error || 'Failed to load feedback.', 'error'); }
+        } catch(e) { showToast('Network error loading feedback.', 'error'); }
+        finally { document.getElementById('feedbackLoader').style.display = 'none'; }
+    }
+    function renderFeedback() {
+        const filter = document.getElementById('feedbackFilter')?.value || '';
+        const list = filter ? allFeedback.filter(f => f['Status'] === filter) : allFeedback;
+        const container = document.getElementById('feedbackList');
+        if (!list.length) { container.innerHTML = '<p style="color:#888;text-align:center;padding:30px;">No feedback entries found.</p>'; return; }
+        container.innerHTML = list.map(f => {
+            const stars = '★'.repeat(parseInt(f['Rating (1-5)']) || 0) + '☆'.repeat(5 - (parseInt(f['Rating (1-5)']) || 0));
+            const status = f['Status'] || 'Pending';
+            const badgeClass = status === 'Published' ? 'badge-published' : status === 'Rejected' ? 'badge-rejected' : 'badge-pending';
+            const actionBtns = status === 'Pending'
+                ? `<button class="approve-btn" onclick="moderateFeedback('${f['Feedback ID']}','Published')">✅ Approve & Publish</button>
+                   <button class="reject-btn" onclick="moderateFeedback('${f['Feedback ID']}','Rejected')">✗ Reject</button>`
+                : `<em style="color:#888;font-size:0.85rem;">${status} on ${formatDateIST(f['Moderated At'])}</em>`;
+            return `<div class="fb-card" id="fb-${f['Feedback ID']}">
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <strong>${f['Customer Name'] || ''}</strong>
+                        <span class="fb-stars">${stars}</span>
+                        <span class="status-badge ${badgeClass}">${status}</span>
+                        ${f['Booking Ref'] ? `<span style="font-size:0.8rem;color:#888;">Ref: ${f['Booking Ref']}</span>` : ''}
+                    </div>
+                    <div class="fb-meta">${formatDateIST(f['Submitted At'])}${f['Trip Route'] ? ' &bull; ' + f['Trip Route'] : ''}</div>
+                    <p class="fb-text">"${f['Review Text'] || ''}"</p>
+                    <div class="fb-actions">${actionBtns}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+    async function moderateFeedback(feedbackId, decision) {
+        try {
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'moderateFeedback', token: authToken, feedbackId, decision })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(decision === 'Published' ? 'Feedback published!' : 'Feedback rejected.', 'success');
+                loadFeedback();
+            } else { showToast(data.error || 'Failed.', 'error'); }
+        } catch(e) { showToast('Network error.', 'error'); }
+    }
+
+    // ── Feedback Share Link ───────────────────────────────────────────────────
+    const FEEDBACK_BASE = window.location.origin + window.location.pathname.replace('admin.html', '') + 'feedback.html';
+    function updateFeedbackLink() {
+        // live preview handled in copyFeedbackLink / shareFeedbackWA
+    }
+    function getFeedbackLink() {
+        const ref = document.getElementById('feedbackLinkInput')?.value.trim();
+        return FEEDBACK_BASE + (ref ? `?ref=${encodeURIComponent(ref)}` : '');
+    }
+    function copyFeedbackLink() {
+        const link = getFeedbackLink();
+        navigator.clipboard.writeText(link).then(() => showToast('Link copied!', 'success'));
+    }
+    function shareFeedbackWA() {
+        const link = getFeedbackLink();
+        const msg = `Dear customer, thank you for travelling with Rapid Travels! We'd love your feedback — it only takes 1 minute:\n\n${link}\n\n— Manish Nagda | Rapid Travels`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
     function logout() {
         authToken = null;
+        ticketsLoaded = false;
+        feedbackLoaded = false;
         document.getElementById('dashboard').style.display = 'none';
         document.getElementById('loginScreen').style.display = 'block';
         document.getElementById('adminPassword').value = '';
