@@ -42,6 +42,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFormSubmit();
     restoreFromLocalStorage();
     removeLoadingOverlay();
+    preloadAllStations();
+    loadFareChart();
+    // Show fare quick-picks when user types pickup
+    const pickupEl = document.getElementById('pickup');
+    if (pickupEl) pickupEl.addEventListener('input', () => setTimeout(renderFareQuickPicks, 300));
 });
 
 function removeLoadingOverlay() {
@@ -313,6 +318,115 @@ async function saveBookingToSheet(data) {
     } catch (e) { console.log(e); return { success: false }; }
 }
 
+// ==================== FARE CHART & QUICK-PICKS ====================
+let fareChart = [];
+
+async function loadFareChart() {
+    if (fareChart.length) return fareChart;
+    const cached = sessionStorage.getItem('rpc_fare_chart');
+    if (cached) { fareChart = JSON.parse(cached); renderFareQuickPicks(); return fareChart; }
+    if (!CONFIG.gasUrl) return [];
+    try {
+        const res = await fetch(`${CONFIG.gasUrl}?action=getFareChart`);
+        const data = await res.json();
+        if (data.success) {
+            fareChart = data.fares || [];
+            sessionStorage.setItem('rpc_fare_chart', JSON.stringify(fareChart));
+            renderFareQuickPicks();
+        }
+    } catch(e) {}
+    return fareChart;
+}
+
+function renderFareQuickPicks() {
+    const pickup = (document.getElementById('pickup')?.value || '').toLowerCase().trim();
+    const container = document.getElementById('fare-quick-picks');
+    if (!container) return;
+    const matches = fareChart.filter(f => pickup && f.from.toLowerCase().includes(pickup));
+    if (!matches.length) { container.innerHTML = ''; return; }
+    container.innerHTML = `<div class="fare-picks-label">Quick destinations from <strong>${matches[0].from}</strong>:</div>` +
+        matches.map(f => {
+            const fareLabel = f.baseFare ? `₹${f.baseFare.toLocaleString('en-IN')}` : `₹${f.perKm}/km`;
+            return `<button type="button" class="fare-pick-btn" onclick="applyFarePick('${f.to}','${f.baseFare}','${f.distance}')">
+                ${f.to} <span class="fare-badge">${fareLabel}</span>
+            </button>`;
+        }).join('');
+}
+
+function applyFarePick(to, fare, distance) {
+    const dropEl = document.getElementById('drop');
+    if (dropEl) dropEl.value = to;
+    // Store suggested fare for admin reference (shown after booking in WhatsApp)
+    window._suggestedFare = fare;
+    window._suggestedDistance = distance;
+    document.getElementById('fare-quick-picks').innerHTML = `<div class="fare-picks-label" style="color:var(--gold);">✓ Drop set: <strong>${to}</strong>${fare > 0 ? ' — Estimated fare: <strong>₹' + parseInt(fare).toLocaleString('en-IN') + '</strong>' : ''}</div>`;
+}
+window.applyFarePick = applyFarePick;
+
+// ==================== STATION AUTOCOMPLETE ====================
+const stationCache = {};
+
+async function loadStations(type) {
+    if (stationCache[type]) return stationCache[type];
+    const key = `rpc_stations_${type}`;
+    const cached = sessionStorage.getItem(key);
+    if (cached) { stationCache[type] = JSON.parse(cached); return stationCache[type]; }
+    if (!CONFIG.gasUrl) return [];
+    try {
+        const res = await fetch(`${CONFIG.gasUrl}?action=getStations&type=${type}`);
+        const data = await res.json();
+        if (data.success && data.stations) {
+            stationCache[type] = data.stations;
+            sessionStorage.setItem(key, JSON.stringify(data.stations));
+            return data.stations;
+        }
+    } catch(e) {}
+    return [];
+}
+
+function buildDatalist(stations, type) {
+    const listId = 'dl-stations';
+    let dl = document.getElementById(listId);
+    if (!dl) { dl = document.createElement('datalist'); dl.id = listId; document.body.appendChild(dl); }
+    dl.innerHTML = '';
+    stations.forEach(s => {
+        const opt = document.createElement('option');
+        if (type === 'Train') {
+            opt.value = `${s['Station Name']} (${s['Code']})`;
+            opt.label = s['City'] + ', ' + s['State'];
+        } else if (type === 'Bus') {
+            opt.value = s['Stand Name'];
+            opt.label = s['City'] + ', ' + s['State'];
+        } else { // Flight
+            opt.value = `${s['City']} – ${s['Airport Name']} (${s['IATA']})`;
+            opt.label = s['Country'];
+        }
+        dl.appendChild(opt);
+    });
+    // Wire both From and To fields to this datalist
+    ['tkt-from','tkt-to'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.setAttribute('list', listId); el.placeholder = type === 'Train' ? 'Station name or code' : type === 'Bus' ? 'Bus stand / city' : 'City or airport'; }
+    });
+}
+
+async function refreshStationList() {
+    const type = document.getElementById('tkt-type')?.value || 'Train';
+    const fromEl = document.getElementById('tkt-from');
+    const toEl   = document.getElementById('tkt-to');
+    if (fromEl) fromEl.placeholder = 'Loading stations…';
+    const stations = await loadStations(type);
+    buildDatalist(stations, type);
+}
+
+// Pre-load all three lists in background after page ready
+function preloadAllStations() {
+    if (!CONFIG.gasUrl) return;
+    setTimeout(() => {
+        ['Train','Bus','Flight'].forEach(t => loadStations(t));
+    }, 2000); // defer 2s so page renders first
+}
+
 // ==================== BOOKING TABS ====================
 function switchBookingTab(tab) {
     const ridePanel   = document.getElementById('ride-panel');
@@ -326,6 +440,7 @@ function switchBookingTab(tab) {
         ticketPanel.style.display = '';
         tabRide.classList.remove('active');
         tabTicket.classList.add('active');
+        updateTicketClass(); // ensure DOB fields and class dropdown reflect current type
     } else {
         ticketPanel.style.display = 'none';
         ridePanel.style.display   = '';
@@ -354,6 +469,15 @@ function updateTicketClass() {
     const p1Wrap = document.getElementById('tkt-dob-p1-wrap');
     if (p1Wrap) p1Wrap.style.display = needsDob ? '' : 'none';
     updatePaxNames(); // regenerate extra pax fields with/without DOB
+    refreshStationList(); // swap datalist for new type
+    // Update service charge notice
+    const chargeTexts = {
+        Train:  'Train: ₹15 (Sleeper/2S) or ₹30 (AC classes) per ticket + 5% GST on service fee (IRCTC norms). Final charges confirmed on WhatsApp before booking.',
+        Bus:    'Bus: ₹30–₹50 booking service fee per transaction. Final charges confirmed on WhatsApp before booking.',
+        Flight: 'Flight: ₹200–₹500 per booking (varies by airline & fare class) + applicable taxes. Final charges confirmed on WhatsApp before booking.'
+    };
+    const chargeEl = document.getElementById('tkt-charge-text');
+    if (chargeEl) chargeEl.textContent = chargeTexts[type] || chargeTexts.Train;
 }
 window.updateTicketClass = updateTicketClass;
 
