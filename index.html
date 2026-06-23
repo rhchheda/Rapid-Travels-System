@@ -224,12 +224,65 @@
 <section class="hero">
     <div class="hero-overlay"></div>
     <div class="container hero-content">
-        <div class="hero-badge animate-fade-down"><i class="fas fa-car"></i> Tata Indica Car Service</div>
+        <div class="hero-badge animate-fade-down"><i class="fas fa-star" style="color:#c9a227;"></i> Hubballi's Trusted Travel Partner</div>
         <h1 class="animate-fade-up">Your Journey,<br>Our Priority!</h1>
-        <p class="animate-fade-up delay-1">Safe &bull; Reliable &bull; Affordable &bull; On-Time</p>
+        <p class="animate-fade-up delay-1">Tata Indica Car Service &nbsp;&bull;&nbsp; Train / Bus / Flight Ticket Booking</p>
         <div class="status-card animate-fade-up delay-2" id="statusCard">
             <div class="status-indicator"><span class="status-dot" id="statusDot"></span><span id="statusText">Checking availability...</span></div>
             <div id="hoursText" class="hours-text"></div>
+        </div>
+        <!-- V1: Dual CTA -->
+        <div class="hero-cta-duo animate-fade-up delay-2">
+            <button class="hero-cta hero-cta-ride" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'});setTimeout(()=>switchBookingTab('ride'),400);">
+                <i class="fas fa-car"></i> Book a Ride
+            </button>
+            <button class="hero-cta hero-cta-ticket" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'});setTimeout(()=>switchBookingTab('ticket'),400);">
+                <i class="fas fa-ticket-alt"></i> Book a Ticket
+            </button>
+        </div>
+        <div class="hero-service-pills animate-fade-up delay-2">
+            <span class="hero-pill"><i class="fas fa-train"></i> Railway Pickup/Drop</span>
+            <span class="hero-pill"><i class="fas fa-plane"></i> Airport Transfer</span>
+            <span class="hero-pill"><i class="fas fa-road"></i> Outstation Trips</span>
+            <span class="hero-pill"><i class="fas fa-ticket-alt"></i> Train / Bus / Flight Tickets</span>
+        </div>
+    </div>
+</section>
+
+<!-- V1: Dual Service Strip -->
+<section class="dual-service">
+    <div class="dual-service-grid">
+        <div class="ds-card ds-card-ride">
+            <div class="ds-icon"><i class="fas fa-car-side"></i></div>
+            <h2>Tata Indica<br>Car Service</h2>
+            <p class="ds-subtitle">Comfortable, reliable & affordable cab service across Hubballi and beyond</p>
+            <ul class="ds-list">
+                <li><i class="fas fa-check-circle"></i> Railway &amp; Airport Pickup / Drop</li>
+                <li><i class="fas fa-check-circle"></i> Local City Travel</li>
+                <li><i class="fas fa-check-circle"></i> Outstation &amp; Long Trips</li>
+                <li><i class="fas fa-check-circle"></i> College, Office &amp; Temple Visits</li>
+                <li><i class="fas fa-check-circle"></i> Transparent Fare Chart</li>
+                <li><i class="fas fa-check-circle"></i> 4-Seater A/C Tata Indica</li>
+            </ul>
+            <button class="ds-cta" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'});setTimeout(()=>switchBookingTab('ride'),400);">
+                <i class="fas fa-car"></i> Book a Ride
+            </button>
+        </div>
+        <div class="ds-card ds-card-ticket">
+            <div class="ds-icon"><i class="fas fa-ticket-alt"></i></div>
+            <h2>Train / Bus / Flight<br>Ticket Booking</h2>
+            <p class="ds-subtitle">Doorstep ticket booking service — IRCTC, bus &amp; airline tickets handled for you</p>
+            <ul class="ds-list">
+                <li><i class="fas fa-train"></i> Train Tickets (All Classes — IRCTC)</li>
+                <li><i class="fas fa-bus"></i> Bus Tickets (All Routes)</li>
+                <li><i class="fas fa-plane"></i> Flight Tickets (Domestic &amp; International)</li>
+                <li><i class="fas fa-users"></i> Multi-Passenger Booking with DOB</li>
+                <li><i class="fas fa-rupee-sign"></i> Minimal Service Charges + GST</li>
+                <li><i class="fas fa-whatsapp fab"></i> Confirmation on WhatsApp</li>
+            </ul>
+            <button class="ds-cta" onclick="document.getElementById('booking').scrollIntoView({behavior:'smooth'});setTimeout(()=>switchBookingTab('ticket'),400);">
+                <i class="fas fa-ticket-alt"></i> Book a Ticket
+            </button>
         </div>
     </div>
 </section>
@@ -331,18 +384,65 @@
     </div>
 </section>
 
+<!-- V1: Image Carousel -->
+<section class="carousel-section">
+    <div class="container">
+        <h2 class="section-title">Life at Rapid Travels</h2>
+        <div class="carousel-wrap">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide">
+                    <img src="assets/images/exterior.jpeg" alt="Tata Indica — Rapid Travels, Hubballi" loading="lazy">
+                    <div class="slide-caption">
+                        <h3>Your Ride Awaits</h3>
+                        <p>Clean, well-maintained Tata Indica — ready for local &amp; outstation trips</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/images/exterior-1.jpeg" alt="Tata Indica Exterior" loading="lazy">
+                    <div class="slide-caption">
+                        <h3>Comfortable &amp; Reliable</h3>
+                        <p>Railway station, airport, temple — we go wherever you need</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/images/interior.jpeg" alt="Tata Indica Spacious Interior" loading="lazy">
+                    <div class="slide-caption">
+                        <h3>Spacious Interior</h3>
+                        <p>Comfortable seating for 4 passengers with luggage space</p>
+                    </div>
+                </div>
+                <div class="carousel-slide">
+                    <img src="assets/images/interior-1.jpeg" alt="Comfortable Seating" loading="lazy">
+                    <div class="slide-caption">
+                        <h3>Every Trip, On Time</h3>
+                        <p>Safe &bull; Affordable &bull; Punctual — your journey, our priority</p>
+                    </div>
+                </div>
+                <!-- Gemini AI images — drop in here as slides when ready -->
+                <!-- <div class="carousel-slide"><img src="assets/images/airport-drop.jpg" alt="Airport Transfer"><div class="slide-caption"><h3>Airport Transfer</h3><p>Hubballi Airport pickup &amp; drop — always on schedule</p></div></div> -->
+                <!-- <div class="carousel-slide"><img src="assets/images/ticket-booking.jpg" alt="Ticket Booking Service"><div class="slide-caption"><h3>Ticket Booking at Your Doorstep</h3><p>Train, Bus &amp; Flight tickets — handled by Manish for you</p></div></div> -->
+            </div>
+            <button class="carousel-btn prev" onclick="carouselMove(-1)" aria-label="Previous">&#8249;</button>
+            <button class="carousel-btn next" onclick="carouselMove(1)"  aria-label="Next">&#8250;</button>
+        </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+</section>
+
 <!-- Combined Booking Section (Tabbed) -->
 <section class="booking" id="booking">
     <div class="container">
         <h2 class="section-title">Book with Rapid Travels</h2>
 
-        <!-- Tab Switcher -->
+        <!-- V1: Enhanced Tab Switcher -->
         <div class="booking-tabs">
             <button class="booking-tab active" id="tab-ride" onclick="switchBookingTab('ride')">
-                🚗 Book a Ride
+                <i class="fas fa-car"></i> Book a Ride
+                <span class="tab-sub">Tata Indica · Local &amp; Outstation</span>
             </button>
             <button class="booking-tab" id="tab-ticket" onclick="switchBookingTab('ticket')">
-                🎫 Book a Ticket
+                <i class="fas fa-ticket-alt"></i> Book a Ticket
+                <span class="tab-sub">Train · Bus · Flight</span>
             </button>
         </div>
 
