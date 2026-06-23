@@ -172,6 +172,42 @@
 
 <div id="toastContainer" class="toast-notify"></div>
 
+<div id="invoiceModal" class="modal-overlay" style="display:none;">
+    <div class="modal" style="max-width:480px;">
+        <div class="modal-header">
+            <h3>🧾 Send Invoice</h3>
+            <button onclick="closeInvoiceModal()" style="background:none;border:none;color:white;font-size:20px;">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom:4px;font-size:0.88rem;color:#888;">Booking: <strong id="inv-booking-id"></strong> &nbsp;|&nbsp; <span id="inv-customer"></span></p>
+            <table style="width:100%;border-collapse:collapse;margin:12px 0;">
+                <tr>
+                    <td style="padding:6px 0;font-size:0.9rem;width:50%;">Base Fare (₹) *</td>
+                    <td><input type="number" id="inv-base-fare" style="width:100%;padding:7px;border:1px solid #ccc;border-radius:4px;" placeholder="e.g. 1800"></td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 0;font-size:0.9rem;">Toll / Parking (₹)</td>
+                    <td><input type="number" id="inv-toll" style="width:100%;padding:7px;border:1px solid #ccc;border-radius:4px;" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 0;font-size:0.9rem;">Service Charge (₹)</td>
+                    <td><input type="number" id="inv-svc" style="width:100%;padding:7px;border:1px solid #ccc;border-radius:4px;" placeholder="0"></td>
+                </tr>
+                <tr>
+                    <td style="padding:6px 0;font-size:0.9rem;">Note (optional)</td>
+                    <td><input type="text" id="inv-note" style="width:100%;padding:7px;border:1px solid #ccc;border-radius:4px;" placeholder="e.g. Includes waiting charges"></td>
+                </tr>
+            </table>
+            <p style="font-size:0.8rem;color:#888;margin-bottom:14px;">Invoice email sent to customer (if email on file) + WhatsApp message opens automatically.</p>
+            <div style="display:flex;gap:10px;">
+                <button onclick="submitInvoice()" class="update-btn" style="flex:1;padding:10px;font-size:0.95rem;">Send Invoice</button>
+                <button onclick="closeInvoiceModal()" class="btn-confirm-cancel" style="flex:1;padding:10px;">Cancel</button>
+            </div>
+            <p id="inv-msg" style="margin-top:10px;font-size:0.85rem;text-align:center;"></p>
+        </div>
+    </div>
+</div>
+
 <div id="confirmModal" class="modal-overlay" style="display:none;">
     <div class="modal">
         <div class="modal-header"><h3 id="confirmTitle">Please confirm</h3><button onclick="closeConfirmModal()" style="background:none; border:none; color:white; font-size:20px;">&times;</button></div>
@@ -361,6 +397,9 @@
                 const updateBtn = document.createElement('button'); updateBtn.innerText = 'Update'; updateBtn.className = 'update-btn';
                 updateBtn.onclick = () => handleUpdateClick(b.BookingID, b.Status || 'Pending', statusSelect.value, fareInput.value, paySelect.value, updateBtn);
                 actionCell.appendChild(updateBtn);
+                const invBtn = document.createElement('button'); invBtn.innerText = '🧾 Invoice'; invBtn.className = 'update-btn'; invBtn.style.background = '#c9a227'; invBtn.style.color = '#0d2145';
+                invBtn.onclick = () => openInvoiceModal(b.BookingID, b.CustomerName, b.Phone, fareInput.value);
+                actionCell.appendChild(invBtn);
                 const payReqBtn = document.createElement('button'); payReqBtn.innerText = 'Request Payment'; payReqBtn.className = 'send-msg-btn payment-btn';
                 payReqBtn.onclick = () => requestPayment(b.BookingID, b.Phone, b.CustomerName, fareInput.value);
                 actionCell.appendChild(payReqBtn);
@@ -643,6 +682,50 @@
         const link = getFeedbackLink();
         const msg = `Dear customer, thank you for travelling with Rapid Travels! We'd love your feedback — it only takes 1 minute:\n\n${link}\n\n— Manish Nagda | Rapid Travels`;
         window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    // ── Invoice Modal ─────────────────────────────────────────────────────────
+    let _invoiceBookingId = null;
+    function openInvoiceModal(bookingId, name, phone, fare) {
+        _invoiceBookingId = bookingId;
+        document.getElementById('inv-booking-id').textContent = bookingId;
+        document.getElementById('inv-customer').textContent = name + ' | ' + phone;
+        document.getElementById('inv-base-fare').value = fare || '';
+        document.getElementById('inv-toll').value = '';
+        document.getElementById('inv-svc').value = '';
+        document.getElementById('inv-note').value = '';
+        document.getElementById('inv-msg').textContent = '';
+        document.getElementById('invoiceModal').style.display = 'flex';
+    }
+    function closeInvoiceModal() { document.getElementById('invoiceModal').style.display = 'none'; }
+    async function submitInvoice() {
+        const baseFare = parseFloat(document.getElementById('inv-base-fare').value) || 0;
+        const toll     = parseFloat(document.getElementById('inv-toll').value) || 0;
+        const svc      = parseFloat(document.getElementById('inv-svc').value) || 0;
+        const note     = document.getElementById('inv-note').value.trim();
+        const msgEl    = document.getElementById('inv-msg');
+        if (!baseFare) { msgEl.textContent = 'Please enter base fare.'; msgEl.style.color = 'red'; return; }
+        msgEl.textContent = 'Sending…'; msgEl.style.color = '#888';
+        try {
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'sendInvoice', token: authToken, bookingId: _invoiceBookingId, tollCharges: toll, serviceCharge: svc, note })
+            });
+            const data = await res.json();
+            if (data.success) {
+                msgEl.textContent = `✅ Invoice ${data.invoiceId} created. Total: ₹${data.total}${data.hasEmail ? ' — Email sent.' : ' — No email on file.'}`;
+                msgEl.style.color = 'green';
+                // Open WhatsApp with formatted message
+                if (data.whatsappText) {
+                    const booking = allBookings.find(b => b.BookingID === _invoiceBookingId);
+                    const phone = booking?.Phone?.toString().replace(/\D/g,'');
+                    const waPhone = phone?.length === 10 ? '91' + phone : phone;
+                    window.open('https://wa.me/' + waPhone + '?text=' + encodeURIComponent(data.whatsappText), '_blank');
+                }
+                setTimeout(closeInvoiceModal, 3000);
+            } else { msgEl.textContent = data.error || 'Failed.'; msgEl.style.color = 'red'; }
+        } catch(e) { msgEl.textContent = 'Network error.'; msgEl.style.color = 'red'; }
     }
 
     function logout() {
