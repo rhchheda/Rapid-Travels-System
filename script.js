@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupFormSubmit();
     restoreFromLocalStorage();
     removeLoadingOverlay();
+    carouselInit();
     preloadAllStations();
     loadFareChart();
     // Show fare quick-picks when user types pickup
@@ -318,6 +319,45 @@ async function saveBookingToSheet(data) {
     } catch (e) { console.log(e); return { success: false }; }
 }
 
+// ==================== CAROUSEL ====================
+let carouselIndex = 0;
+let carouselTimer = null;
+
+function carouselInit() {
+    const track = document.getElementById('carouselTrack');
+    const dotsEl = document.getElementById('carouselDots');
+    if (!track || !dotsEl) return;
+    const slides = track.querySelectorAll('.carousel-slide');
+    if (!slides.length) return;
+    dotsEl.innerHTML = Array.from(slides).map((_, i) =>
+        `<button class="carousel-dot${i === 0 ? ' active' : ''}" onclick="carouselGoTo(${i})" aria-label="Slide ${i+1}"></button>`
+    ).join('');
+    carouselGoTo(0);
+    carouselAutoPlay();
+}
+
+function carouselGoTo(idx) {
+    const track = document.getElementById('carouselTrack');
+    if (!track) return;
+    const slides = track.querySelectorAll('.carousel-slide');
+    carouselIndex = (idx + slides.length) % slides.length;
+    track.style.transform = `translateX(-${carouselIndex * 100}%)`;
+    document.querySelectorAll('.carousel-dot').forEach((d, i) =>
+        d.classList.toggle('active', i === carouselIndex));
+}
+
+function carouselMove(dir) {
+    carouselGoTo(carouselIndex + dir);
+    carouselAutoPlay(); // reset timer on manual nav
+}
+window.carouselMove = carouselMove;
+window.carouselGoTo = carouselGoTo;
+
+function carouselAutoPlay() {
+    if (carouselTimer) clearInterval(carouselTimer);
+    carouselTimer = setInterval(() => carouselGoTo(carouselIndex + 1), 4500);
+}
+
 // ==================== FARE CHART & QUICK-PICKS ====================
 let fareChart = [];
 
@@ -366,22 +406,107 @@ window.applyFarePick = applyFarePick;
 // ==================== STATION AUTOCOMPLETE ====================
 const stationCache = {};
 
+// Local seed — instant fallback even before GAS is deployed.
+// GAS Sheet data merges in on top when available.
+const STATION_SEED = {
+    Train: [
+        {n:'Hubballi Junction (UBL)',c:'Hubballi,KA'},{n:'Dharwad (DWR)',c:'Dharwad,KA'},
+        {n:'Belagavi (BGM)',c:'Belagavi,KA'},{n:'Davangere (DVG)',c:'Davangere,KA'},
+        {n:'Hospet Junction (HPT)',c:'Hospet,KA'},{n:'Gadag Junction (GDG)',c:'Gadag,KA'},
+        {n:'Haveri (HVR)',c:'Haveri,KA'},{n:'Ranibennur (RNR)',c:'Ranibennur,KA'},
+        {n:'Londa Junction (LD)',c:'Londa,KA'},{n:'Karwar (KAWR)',c:'Karwar,KA'},
+        {n:'Bengaluru City Junction (SBC)',c:'Bengaluru,KA'},{n:'Yeshvantpur Junction (YPR)',c:'Bengaluru,KA'},
+        {n:'Mysuru Junction (MYS)',c:'Mysuru,KA'},{n:'Mangaluru Junction (MAJN)',c:'Mangaluru,KA'},
+        {n:'Shivamogga Town (SMET)',c:'Shivamogga,KA'},{n:'Hassan (HAS)',c:'Hassan,KA'},
+        {n:'Kalaburagi (GR)',c:'Kalaburagi,KA'},{n:'Vijayapura (BJP)',c:'Vijayapura,KA'},
+        {n:'Ballari Junction (BAY)',c:'Ballari,KA'},{n:'Udupi (UD)',c:'Udupi,KA'},
+        {n:'Mumbai CSMT (CSMT)',c:'Mumbai,MH'},{n:'Mumbai Central (BCT)',c:'Mumbai,MH'},
+        {n:'Lokmanya Tilak Terminus (LTT)',c:'Mumbai,MH'},{n:'Pune Junction (PUNE)',c:'Pune,MH'},
+        {n:'Nagpur Junction (NGP)',c:'Nagpur,MH'},{n:'Kolhapur (KOP)',c:'Kolhapur,MH'},
+        {n:'Miraj Junction (MRJ)',c:'Miraj,MH'},{n:'Solapur (SUR)',c:'Solapur,MH'},
+        {n:'Madgaon / Goa (MAO)',c:'Goa'},{n:'Vasco Da Gama (VSG)',c:'Goa'},
+        {n:'Hyderabad Deccan (HYB)',c:'Hyderabad,TS'},{n:'Secunderabad Junction (SC)',c:'Hyderabad,TS'},
+        {n:'Chennai Central (MAS)',c:'Chennai,TN'},{n:'Coimbatore Junction (CBE)',c:'Coimbatore,TN'},
+        {n:'New Delhi (NDLS)',c:'Delhi'},{n:'Hazrat Nizamuddin (NZM)',c:'Delhi'},
+        {n:'Jaipur Junction (JP)',c:'Jaipur,RJ'},{n:'Ahmedabad Junction (ADI)',c:'Ahmedabad,GJ'},
+        {n:'Surat (ST)',c:'Surat,GJ'},{n:'Vadodara Junction (BRC)',c:'Vadodara,GJ'},
+        {n:'Kolkata Howrah (HWH)',c:'Kolkata,WB'},{n:'Lucknow Charbagh (LKO)',c:'Lucknow,UP'},
+        {n:'Varanasi Junction (BSB)',c:'Varanasi,UP'},{n:'Bhopal Junction (BPL)',c:'Bhopal,MP'},
+        {n:'Tirupati (TPTY)',c:'Tirupati,AP'},{n:'Kochi Ernakulam (ERS)',c:'Kochi,KL'},
+        {n:'Thiruvananthapuram (TVC)',c:'Trivandrum,KL'},{n:'Amritsar Junction (ASR)',c:'Amritsar,PB'}
+    ],
+    Bus: [
+        {n:'Hubballi NWKRTC Bus Stand',c:'Hubballi,KA'},{n:'Dharwad Bus Stand',c:'Dharwad,KA'},
+        {n:'Belagavi Central Bus Stand',c:'Belagavi,KA'},{n:'Davangere Bus Stand',c:'Davangere,KA'},
+        {n:'Hospet Bus Stand',c:'Hospet,KA'},{n:'Gadag Bus Stand',c:'Gadag,KA'},
+        {n:'Haveri Bus Stand',c:'Haveri,KA'},{n:'Ranibennur Bus Stand',c:'Ranibennur,KA'},
+        {n:'Sirsi Bus Stand',c:'Sirsi,KA'},{n:'Karwar Bus Stand',c:'Karwar,KA'},
+        {n:'Bengaluru Majestic KSRTC',c:'Bengaluru,KA'},{n:'Bengaluru Satellite Bus Stand',c:'Bengaluru,KA'},
+        {n:'Mysuru Central Bus Stand',c:'Mysuru,KA'},{n:'Mangaluru KSRTC Bus Stand',c:'Mangaluru,KA'},
+        {n:'Shivamogga Bus Stand',c:'Shivamogga,KA'},{n:'Hassan Bus Stand',c:'Hassan,KA'},
+        {n:'Kalaburagi Bus Stand',c:'Kalaburagi,KA'},{n:'Vijayapura Bus Stand',c:'Vijayapura,KA'},
+        {n:'Ballari Bus Stand',c:'Ballari,KA'},{n:'Udupi Bus Stand',c:'Udupi,KA'},
+        {n:'Pune Swargate Bus Stand',c:'Pune,MH'},{n:'Kolhapur Bus Stand',c:'Kolhapur,MH'},
+        {n:'Solapur Bus Stand',c:'Solapur,MH'},{n:'Nashik CBS',c:'Nashik,MH'},
+        {n:'Mumbai Dadar Bus Terminal',c:'Mumbai,MH'},{n:'Panaji Kadamba Bus Stand',c:'Goa'},
+        {n:'Hyderabad MGBS',c:'Hyderabad,TS'},{n:'Chennai Koyambedu CMBT',c:'Chennai,TN'},
+        {n:'Coimbatore CBS',c:'Coimbatore,TN'},{n:'Koppal Bus Stand',c:'Koppal,KA'}
+    ],
+    Flight: [
+        {n:'Hubballi Airport (HBX)',c:'Hubballi,India'},{n:'Bengaluru Kempegowda Intl (BLR)',c:'Bengaluru,India'},
+        {n:'Mumbai Chhatrapati Shivaji Intl (BOM)',c:'Mumbai,India'},{n:'Delhi Indira Gandhi Intl (DEL)',c:'Delhi,India'},
+        {n:'Chennai Intl (MAA)',c:'Chennai,India'},{n:'Hyderabad Rajiv Gandhi Intl (HYD)',c:'Hyderabad,India'},
+        {n:'Kolkata Netaji Subhas Intl (CCU)',c:'Kolkata,India'},{n:'Kochi Intl (COK)',c:'Kochi,India'},
+        {n:'Goa Dabolim (GOI)',c:'Goa,India'},{n:'Goa Mopa Manohar Intl (GOX)',c:'Goa,India'},
+        {n:'Pune Airport (PNQ)',c:'Pune,India'},{n:'Ahmedabad Sardar Patel Intl (AMD)',c:'Ahmedabad,India'},
+        {n:'Mangaluru Intl (IXE)',c:'Mangaluru,India'},{n:'Coimbatore Intl (CJB)',c:'Coimbatore,India'},
+        {n:'Thiruvananthapuram Intl (TRV)',c:'Trivandrum,India'},{n:'Calicut Intl (CCJ)',c:'Kozhikode,India'},
+        {n:'Jaipur Intl (JAI)',c:'Jaipur,India'},{n:'Nagpur Dr Ambedkar Intl (NAG)',c:'Nagpur,India'},
+        {n:'Belagavi Airport (IXG)',c:'Belagavi,India'},{n:'Mysuru Airport (MYQ)',c:'Mysuru,India'},
+        {n:'Dubai Intl (DXB)',c:'Dubai,UAE'},{n:'Abu Dhabi Intl (AUH)',c:'Abu Dhabi,UAE'},
+        {n:'Sharjah Intl (SHJ)',c:'Sharjah,UAE'},{n:'Doha Hamad Intl (DOH)',c:'Doha,Qatar'},
+        {n:'Muscat Intl (MCT)',c:'Muscat,Oman'},{n:'Kuwait Intl (KWI)',c:'Kuwait City,Kuwait'},
+        {n:'Riyadh King Khalid Intl (RUH)',c:'Riyadh,Saudi Arabia'},{n:'Jeddah King Abdulaziz Intl (JED)',c:'Jeddah,Saudi Arabia'},
+        {n:'Singapore Changi (SIN)',c:'Singapore'},{n:'Kuala Lumpur Intl (KUL)',c:'Malaysia'},
+        {n:'Bangkok Suvarnabhumi (BKK)',c:'Bangkok,Thailand'},{n:'London Heathrow (LHR)',c:'London,UK'},
+        {n:'Frankfurt Intl (FRA)',c:'Frankfurt,Germany'},{n:'Paris Charles de Gaulle (CDG)',c:'Paris,France'},
+        {n:'New York JFK (JFK)',c:'New York,USA'},{n:'Los Angeles Intl (LAX)',c:'Los Angeles,USA'},
+        {n:'Sydney Kingsford Smith (SYD)',c:'Sydney,Australia'},{n:'Colombo Bandaranaike (CMB)',c:'Colombo,Sri Lanka'},
+        {n:'Kathmandu Tribhuvan (KTM)',c:'Kathmandu,Nepal'},{n:'Hong Kong Intl (HKG)',c:'Hong Kong'}
+    ]
+};
+
+function seedToStations(type) {
+    return STATION_SEED[type].map(s => {
+        if (type === 'Train')  return { 'Station Name': s.n, 'Code': '', 'City': s.c, 'State': '' };
+        if (type === 'Bus')    return { 'Stand Name': s.n, 'City': s.c, 'State': '' };
+        return { 'Airport Name': s.n, 'IATA': '', 'City': s.c, 'Country': s.c.split(',')[1] || 'India' };
+    });
+}
+
 async function loadStations(type) {
     if (stationCache[type]) return stationCache[type];
     const key = `rpc_stations_${type}`;
     const cached = sessionStorage.getItem(key);
     if (cached) { stationCache[type] = JSON.parse(cached); return stationCache[type]; }
-    if (!CONFIG.gasUrl) return [];
-    try {
-        const res = await fetch(`${CONFIG.gasUrl}?action=getStations&type=${type}`);
-        const data = await res.json();
-        if (data.success && data.stations) {
-            stationCache[type] = data.stations;
-            sessionStorage.setItem(key, JSON.stringify(data.stations));
-            return data.stations;
-        }
-    } catch(e) {}
-    return [];
+
+    // Use seed immediately so typing works right away
+    stationCache[type] = seedToStations(type);
+    buildDatalist(stationCache[type], type);
+
+    // Then fetch from GAS in background and upgrade if available
+    if (CONFIG.gasUrl) {
+        try {
+            const res = await fetch(`${CONFIG.gasUrl}?action=getStations&type=${type}`);
+            const data = await res.json();
+            if (data.success && data.stations && data.stations.length > 0) {
+                stationCache[type] = data.stations;
+                sessionStorage.setItem(key, JSON.stringify(data.stations));
+                buildDatalist(stationCache[type], type); // upgrade datalist silently
+            }
+        } catch(e) {}
+    }
+    return stationCache[type];
 }
 
 function buildDatalist(stations, type) {
