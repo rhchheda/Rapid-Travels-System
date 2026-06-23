@@ -313,6 +313,59 @@ async function saveBookingToSheet(data) {
     } catch (e) { console.log(e); return { success: false }; }
 }
 
+// ==================== BOOKING TABS ====================
+function switchBookingTab(tab) {
+    const ridePanel   = document.getElementById('ride-panel');
+    const ticketPanel = document.getElementById('ticket-panel');
+    const tabRide     = document.getElementById('tab-ride');
+    const tabTicket   = document.getElementById('tab-ticket');
+    if (!ridePanel || !ticketPanel) return;
+
+    if (tab === 'ticket') {
+        ridePanel.style.display   = 'none';
+        ticketPanel.style.display = '';
+        tabRide.classList.remove('active');
+        tabTicket.classList.add('active');
+    } else {
+        ticketPanel.style.display = 'none';
+        ridePanel.style.display   = '';
+        tabTicket.classList.remove('active');
+        tabRide.classList.add('active');
+    }
+}
+window.switchBookingTab = switchBookingTab;
+
+// ==================== TICKET CLASS SMART DROPDOWN ====================
+const TICKET_CLASSES = {
+    Train:  ['Sleeper (SL)', '3rd AC (3A)', '2nd AC (2A)', '1st AC (1A)', 'Chair Car (CC)', 'Executive Chair (EC)'],
+    Bus:    ['Seater', 'Semi-Sleeper', 'Sleeper', 'Volvo / AC Seater', 'Volvo / AC Sleeper'],
+    Flight: ['Economy', 'Premium Economy', 'Business']
+};
+function updateTicketClass() {
+    const type = document.getElementById('tkt-type')?.value;
+    const sel  = document.getElementById('tkt-class');
+    if (!sel || !type) return;
+    const opts = TICKET_CLASSES[type] || TICKET_CLASSES.Train;
+    sel.innerHTML = opts.map(o => `<option value="${o}">${o}</option>`).join('');
+}
+window.updateTicketClass = updateTicketClass;
+
+// ==================== DYNAMIC PASSENGER NAMES ====================
+function updatePaxNames() {
+    const pax      = parseInt(document.getElementById('tkt-pax')?.value || 1, 10);
+    const container = document.getElementById('tkt-extra-pax');
+    if (!container) return;
+    container.innerHTML = '';
+    for (let i = 2; i <= pax; i++) {
+        const div = document.createElement('div');
+        div.className = 'form-group';
+        div.innerHTML = `<label><i class="fas fa-user"></i> Passenger ${i} Name</label>
+            <input type="text" id="tkt-pax-name-${i}" placeholder="Full name of passenger ${i}">`;
+        container.appendChild(div);
+    }
+}
+window.updatePaxNames = updatePaxNames;
+
 // ==================== TICKET BOOKING ENQUIRY (WhatsApp direct) ====================
 function sendTicketEnquiry() {
     const type  = document.getElementById('tkt-type')?.value;
@@ -321,8 +374,8 @@ function sendTicketEnquiry() {
     const from  = document.getElementById('tkt-from')?.value.trim();
     const to    = document.getElementById('tkt-to')?.value.trim();
     const date  = document.getElementById('tkt-date')?.value;
-    const pax   = document.getElementById('tkt-pax')?.value;
-    const cls   = document.getElementById('tkt-class')?.value.trim();
+    const pax   = parseInt(document.getElementById('tkt-pax')?.value || 1, 10);
+    const cls   = document.getElementById('tkt-class')?.value;
     const notes = document.getElementById('tkt-notes')?.value.trim();
 
     if (!name || !phone || !from || !to || !date) {
@@ -331,16 +384,35 @@ function sendTicketEnquiry() {
     }
     if (!/^\d{10}$/.test(phone)) { showToast('Enter a valid 10-digit phone number.', 'error'); return; }
 
+    // Collect extra passenger names
+    const paxNames = [name];
+    for (let i = 2; i <= pax; i++) {
+        const v = document.getElementById(`tkt-pax-name-${i}`)?.value.trim();
+        if (v) paxNames.push(v);
+    }
+
     let msg = `*TICKET BOOKING ENQUIRY – Rapid Travels*\n\n`;
-    msg += `Ticket Type: ${type}\n`;
-    msg += `Name: ${name}\n`;
-    msg += `Phone: ${phone}\n`;
-    msg += `From: ${from}\nTo: ${to}\n`;
+    msg += `Ticket Type: ${type} Ticket\n`;
+    msg += `From: ${from}  →  To: ${to}\n`;
     msg += `Travel Date: ${formatDateIST(date)}\n`;
-    msg += `Passengers: ${pax || 1}\n`;
-    if (cls)   msg += `Class / Preference: ${cls}\n`;
+    msg += `Class: ${cls || 'Any'}\n`;
+    msg += `Passengers: ${pax}\n`;
+    paxNames.forEach((n, idx) => { msg += `  P${idx + 1}: ${n}\n`; });
+    msg += `Contact Phone: ${phone}\n`;
     if (notes) msg += `Notes: ${notes}\n`;
     msg += `\nPlease confirm availability and charges.`;
+
+    // Log to Google Sheet (fire-and-forget, don't block WhatsApp)
+    if (CONFIG.gasUrl) {
+        fetch(CONFIG.gasUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'submitTicketEnquiry',
+                data: { type: type + ' Ticket', from, to, date, cls, pax, paxNames, phone, notes }
+            })
+        }).catch(() => {}); // silent — WhatsApp is the primary channel
+    }
 
     window.open(`https://wa.me/919480324895?text=${encodeURIComponent(msg)}`, '_blank');
 }
