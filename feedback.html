@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Share Your Feedback | Rapid Travels</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; min-height: 100vh; display: flex; flex-direction: column; }
+        .page-header { background: linear-gradient(135deg, #0d2145, #1a3a6e); color: white; padding: 18px 24px; text-align: center; }
+        .page-header h1 { color: #c9a227; font-size: 1.4rem; margin-bottom: 4px; }
+        .page-header p { color: #ccc; font-size: 0.9rem; }
+        .card { max-width: 520px; margin: 32px auto; background: white; border-radius: 14px; box-shadow: 0 4px 18px rgba(0,0,0,0.1); overflow: hidden; }
+        .card-body { padding: 28px 28px 32px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-weight: 600; color: #0d2145; margin-bottom: 6px; font-size: 0.95rem; }
+        input[type="text"], textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #ddd; border-radius: 8px; font-size: 0.95rem; font-family: inherit; transition: border 0.2s; }
+        input[type="text"]:focus, textarea:focus { border-color: #c9a227; outline: none; }
+        textarea { resize: vertical; min-height: 110px; }
+        /* Star rating */
+        .stars { display: flex; gap: 6px; flex-direction: row-reverse; justify-content: flex-end; }
+        .stars input { display: none; }
+        .stars label { font-size: 2.2rem; color: #ddd; cursor: pointer; transition: color 0.15s; font-weight: normal; margin: 0; }
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label { color: #c9a227; }
+        .rating-hint { font-size: 0.8rem; color: #999; margin-top: 4px; }
+        /* Submit button */
+        .submit-btn { width: 100%; padding: 14px; background: #0d2145; color: #c9a227; border: none; border-radius: 8px; font-size: 1.05rem; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-top: 6px; }
+        .submit-btn:hover { background: #1a3a6e; }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* Success state */
+        .success-msg { display: none; text-align: center; padding: 40px 20px; }
+        .success-msg .tick { font-size: 3.5rem; margin-bottom: 16px; }
+        .success-msg h2 { color: #0d2145; margin-bottom: 10px; }
+        .success-msg p { color: #555; line-height: 1.6; }
+        /* Ref badge */
+        .ref-badge { display: inline-block; background: #e8f0fe; color: #0d2145; border-radius: 20px; padding: 3px 12px; font-size: 0.82rem; font-weight: 600; margin-bottom: 16px; }
+        .error-msg { color: #e74c3c; font-size: 0.85rem; margin-top: 6px; display: none; }
+        footer { text-align: center; padding: 18px; color: #aaa; font-size: 0.82rem; margin-top: auto; }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>🚗 Rapid Travels</h1>
+    <p>Tata Indica Car Service | Hubballi (Hubli), Karnataka</p>
+</div>
+
+<div class="card">
+    <div class="card-body" id="formArea">
+        <h2 style="color:#0d2145; margin-bottom:6px;">How was your experience?</h2>
+        <p style="color:#666; font-size:0.9rem; margin-bottom:18px;">Your honest feedback helps us serve you better. Takes less than a minute!</p>
+
+        <div id="refBadge" style="display:none;" class="form-group">
+            <span class="ref-badge" id="refBadgeText"></span>
+        </div>
+
+        <!-- Star Rating -->
+        <div class="form-group">
+            <label>Your Rating *</label>
+            <div class="stars" id="starWidget">
+                <input type="radio" id="s5" name="rating" value="5"><label for="s5">★</label>
+                <input type="radio" id="s4" name="rating" value="4"><label for="s4">★</label>
+                <input type="radio" id="s3" name="rating" value="3"><label for="s3">★</label>
+                <input type="radio" id="s2" name="rating" value="2"><label for="s2">★</label>
+                <input type="radio" id="s1" name="rating" value="1"><label for="s1">★</label>
+            </div>
+            <div class="rating-hint" id="ratingHint">Tap a star to rate</div>
+        </div>
+
+        <div class="form-group">
+            <label for="fbName">Your Name *</label>
+            <input type="text" id="fbName" placeholder="e.g. Rakesh Kumar" maxlength="60">
+        </div>
+
+        <div class="form-group">
+            <label for="fbReview">Your Review *</label>
+            <textarea id="fbReview" placeholder="Tell us about your journey — punctuality, comfort, driver behaviour, anything you liked or want us to improve..." maxlength="600"></textarea>
+            <div style="text-align:right; font-size:0.78rem; color:#aaa; margin-top:3px;"><span id="charCount">0</span>/600</div>
+        </div>
+
+        <div class="form-group">
+            <label for="fbFrom">From (optional)</label>
+            <input type="text" id="fbFrom" placeholder="Origin city / area" maxlength="80">
+        </div>
+        <div class="form-group">
+            <label for="fbTo">To (optional)</label>
+            <input type="text" id="fbTo" placeholder="Destination city / area" maxlength="80">
+        </div>
+
+        <div id="errorMsg" class="error-msg"></div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitFeedback()">Submit Feedback</button>
+    </div>
+
+    <div class="success-msg" id="successArea">
+        <div class="tick">🙏</div>
+        <h2>Thank you for your feedback!</h2>
+        <p>Your review has been submitted and will be published on our website after a quick review.<br><br>
+        We look forward to serving you again!<br><br>
+        <strong>— Manish Nagda | Rapid Travels | 94803 24895</strong></p>
+    </div>
+</div>
+
+<footer>Rapid Travels | Hubballi, Karnataka &nbsp;|&nbsp; Not linked from main site — shared privately by admin</footer>
+
+<script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyfa4naqeIa6nI_YRmvleBAJHUGijZQY6cfINUshKBU7h6zWhHbmNseNlJ6N_b57NPV/exec"; // same as admin
+
+    // Pre-fill booking ref from URL param
+    const params = new URLSearchParams(window.location.search);
+    const bookingRef = params.get('ref') || '';
+    if (bookingRef) {
+        document.getElementById('refBadge').style.display = '';
+        document.getElementById('refBadgeText').textContent = '📋 Booking Ref: ' + bookingRef;
+    }
+
+    // Star rating hint
+    const hints = { 1: 'Poor', 2: 'Fair', 3: 'Good', 4: 'Very Good', 5: 'Excellent!' };
+    document.querySelectorAll('.stars input').forEach(input => {
+        input.addEventListener('change', () => {
+            document.getElementById('ratingHint').textContent = hints[input.value] || '';
+        });
+    });
+
+    // Char counter
+    document.getElementById('fbReview').addEventListener('input', function() {
+        document.getElementById('charCount').textContent = this.value.length;
+    });
+
+    async function submitFeedback() {
+        const rating = document.querySelector('.stars input:checked')?.value;
+        const name   = document.getElementById('fbName').value.trim();
+        const review = document.getElementById('fbReview').value.trim();
+        const from   = document.getElementById('fbFrom').value.trim();
+        const to     = document.getElementById('fbTo').value.trim();
+        const errEl  = document.getElementById('errorMsg');
+
+        errEl.style.display = 'none';
+        if (!rating) { errEl.textContent = 'Please select a star rating.'; errEl.style.display = 'block'; return; }
+        if (!name)   { errEl.textContent = 'Please enter your name.'; errEl.style.display = 'block'; return; }
+        if (!review) { errEl.textContent = 'Please write a short review.'; errEl.style.display = 'block'; return; }
+        if (review.length < 10) { errEl.textContent = 'Review is too short — please write at least a sentence.'; errEl.style.display = 'block'; return; }
+
+        const btn = document.getElementById('submitBtn');
+        btn.textContent = 'Submitting…';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(GAS_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    action: 'submitFeedback',
+                    data: { bookingRef, customerName: name, rating: parseInt(rating), reviewText: review, from, to }
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('formArea').style.display = 'none';
+                document.getElementById('successArea').style.display = 'block';
+            } else {
+                errEl.textContent = data.error || 'Submission failed. Please try again.';
+                errEl.style.display = 'block';
+                btn.textContent = 'Submit Feedback';
+                btn.disabled = false;
+            }
+        } catch(e) {
+            errEl.textContent = 'Network error. Please check your connection and try again.';
+            errEl.style.display = 'block';
+            btn.textContent = 'Submit Feedback';
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>
